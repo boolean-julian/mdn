@@ -130,7 +130,36 @@ def quasi_newton_bfgs(curr, atol = 10**(-11)):
 		p = np.matmul(Binv, (-1)*gradf(xs[-1]))
 
 	return xs, ys, Binv
+"""tbc
+def quasi_newton_broyden_bad(curr, atol = 10*(-11)):
+	xs = [curr]
+	ys = [np.linalg.norm(gradf(xs[-1]))]
 
+	Binv = np.array(np.eye(len(curr)), dtype=np.float64)
+	p = (-1)*gradf(curr)
+
+	alphas = [2]
+	for i in range(10):
+		alphas.append(alphas[-1]/2)
+
+	while ys[-1] > atol:
+		fargmin = []		
+		for a in alphas:
+			fargmin.append(func(xs[-1] + a*p))
+		alpha = alphas[np.argmin(fargmin)]
+		
+		s = alpha * p
+		xs.append(xs[-1] + s)
+		ys.append(np.linalg.norm(gradf(xs[-1])))
+
+		y = gradf(xs[-1]) - gradf(xs[-2])
+
+		Binv = Binv + np.outer(1/np.dot(y,y) * (s - np.matmul(Binv,y)), y)
+
+		p = np.matmul(Binv, (-1)*gradf(xs[-1]))
+
+	return xs, ys, Binv
+"""
 
 x = [0,0,0,0,0,0,0]
 
@@ -139,7 +168,7 @@ print(func(xs[-1]))
 _save_iteration_graph(ys, "iteration-hessian")
 _save_step_size_graph(xs, "step-size-hessian")
 
-xs, ys, H_bfgs = quasi_newton_bfgs(x)
+xs, ys, H_inv = quasi_newton_bfgs(x)
 print(func(xs[-1]))
 _save_iteration_graph(ys, "iteration-bfgs")
 _save_step_size_graph(xs, "step-size-bfgs")
