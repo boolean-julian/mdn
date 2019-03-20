@@ -91,9 +91,8 @@ def newton_with_hessian(curr, atol = 10**(-11)):
 	ys = [np.linalg.norm(gradf(xs[-1]))]
 
 	while ys[-1] > atol:
-		np.array(np.linalg.inv(hessf(xs[-1]))					,dtype=np.float64)
 		hessf_inv = np.array(np.linalg.inv(hessf(xs[-1]))		,dtype=np.float64)
-		xs.append( xs[-1] - np.matmul(gradf(xs[-1]),hessf_inv) )
+		xs.append( xs[-1] - np.matmul(hessf_inv,gradf(xs[-1])))
 		ys.append( np.linalg.norm(gradf(xs[-1])) )
 	return xs, ys
 
@@ -101,15 +100,14 @@ def quasi_newton_bfgs(curr, atol = 10**(-11)):
 	xs = [curr]
 	ys = [np.linalg.norm(gradf(xs[-1]))]
 
-	B = np.array(np.eye(len(curr)), dtype=np.float64)
+	Binv = np.array(np.eye(len(curr)), dtype=np.float64)
+	p = (-1)*gradf(curr)
 
 	alphas = [2]
 	for i in range(10):
 		alphas.append(alphas[-1]/2)
-
+	
 	while ys[-1] > atol:
-		p = solve(B, (-1)*gradf(xs[-1]))
-
 		fargmin = []		
 		for a in alphas:
 			fargmin.append(func(xs[-1] + a*p))
@@ -121,20 +119,27 @@ def quasi_newton_bfgs(curr, atol = 10**(-11)):
 
 		y = gradf(xs[-1]) - gradf(xs[-2])
 
-		A = 1/np.dot(y,s) * np.outer(y,y)
-		C = 1/np.dot(s, np.matmul(B,s))*np.matmul(B, np.matmul(np.outer(s,s), B.T))
+		S1 = (np.dot(s,y) + np.dot(y, np.matmul(Binv, y)))*np.outer(s,s)
+		S1 = S1 * 1/np.dot(s,y)**2
 
-		B = B + A - C
+		S2 = np.matmul(Binv, np.outer(y,s)) + np.matmul(np.outer(s,y),Binv)
+		S2 = S2 * 1/np.dot(s,y)
 
-	return xs, ys, B
+		Binv = Binv + S1 - S2
+
+		p = np.matmul(Binv, (-1)*gradf(xs[-1]))
+
+	return xs, ys, Binv
 
 
 x = [0,0,0,0,0,0,0]
 
 xs, ys = newton_with_hessian(x)
+print(func(xs[-1]))
 _save_iteration_graph(ys, "iteration-hessian")
 _save_step_size_graph(xs, "step-size-hessian")
 
 xs, ys, H_bfgs = quasi_newton_bfgs(x)
+print(func(xs[-1]))
 _save_iteration_graph(ys, "iteration-bfgs")
 _save_step_size_graph(xs, "step-size-bfgs")
