@@ -7,31 +7,38 @@ import os
 def tridiag(a,b,c,size):
 	return np.diag([a]*(size-1),-1) + np.diag([b]*(size),0) + np.diag([c]*(size-1),1)
 
-def set_margin(img, margin):
-	img[0] 		= margin
-	img[-1] 	= margin
-	img[:,0] 	= margin
-	img[:,-1] 	= margin
+def set_boundary(img, boundary):
+	#oben
+	img[0] 		= boundary
+	
+	#unten
+	img[-1] 	= boundary
+	
+	#links
+	img[:,0] 	= boundary
+	
+	#rechts
+	img[:,-1] 	= boundary
 
 	return img
 
-def create_image(size, margin = 0):
-	img = np.random.rand(size, size)
+def create_image(size, boundary = 0):
+	#img = np.random.rand(size, size)
 	#big spot in center
-	"""
+	
 	img = np.zeros((size,size))
 	
 	b = 5
 	for i in range(size//2-b, size//2+b):
 		for j in range(size//2-b, size//2+b):
 			img[i,j] = 1
-	"""
-	img = set_margin(img, margin)
+	
+	img = set_boundary(img, boundary)
 	
 	return img
 
 alpha = 1
-delta_t = 1
+delta_t = 0.5
 hsquared = 1
 coef = (alpha*delta_t)/hsquared
 
@@ -39,7 +46,7 @@ def _neighborhood(i,j):
 	return [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]
 
 @jit
-def iter(before, margin = 0):
+def iter(before, boundary = 0):
 	current = (1-coef)*before.copy()
 	for i in range(1, len(A)-1):
 		for j in range(1, len(A[0])-1):
@@ -48,7 +55,7 @@ def iter(before, margin = 0):
 				s += before[k,l]
 			current[i,j] += s/4 * coef
 
-	current = set_margin(current, margin)
+	current = set_boundary(current, boundary)
 	return current
 
 def make_movie(A, N, heat=False):
@@ -74,4 +81,4 @@ def make_movie(A, N, heat=False):
 
 
 A = create_image(200)
-make_movie(A, 300, heat = True)
+make_movie(A, 300, heat = False)

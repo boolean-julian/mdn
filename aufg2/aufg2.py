@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.linalg import solve
 
 # show significant figures
-np.set_printoptions(precision=11)
+np.set_printoptions(precision=15)
 
 # input functions
 def g(x):
@@ -60,7 +60,7 @@ def hessf(x):
 	h = Hg(x)
 	z = g(x)
 
-	s = np.array(np.matmul(Jg(x).T, Jg(x)),dtype=np.float64)
+	s = np.float64(np.matmul(Jg(x).T, Jg(x)))
 	for i in range(len(z)):
 		s = s + z[i]*h[i]
 
