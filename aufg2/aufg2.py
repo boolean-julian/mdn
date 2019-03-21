@@ -130,6 +130,7 @@ def quasi_newton_bfgs(curr, atol = 10**(-11)):
 		p = np.matmul(Binv, (-1)*gradf(xs[-1]))
 
 	return xs, ys, Binv
+	
 """tbc
 def quasi_newton_broyden_bad(curr, atol = 10*(-11)):
 	xs = [curr]

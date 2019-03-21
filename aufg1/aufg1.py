@@ -39,17 +39,17 @@ def _neighborhood(i,j):
 	return [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]
 
 @jit
-def iter(A, margin = 0):
-	img = (1-coef)*A.copy()
+def iter(before, margin = 0):
+	current = (1-coef)*before.copy()
 	for i in range(1, len(A)-1):
 		for j in range(1, len(A[0])-1):
 			s = 0
 			for (k,l) in _neighborhood(i,j):
-				s += A[k,l]
-			img[i,j] += s/4 * coef
+				s += before[k,l]
+			current[i,j] += s/4 * coef
 
-	img = set_margin(img, margin)
-	return img
+	current = set_margin(current, margin)
+	return current
 
 def make_movie(A, N, heat=False):
 	for i in range(N):
