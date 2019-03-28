@@ -1,0 +1,2 @@
+\babel@toc {ngerman}{}
+\beamer@sectionintoc {1}{Aufgabe 1 - Wärmegleichung}{2}{0}{1}

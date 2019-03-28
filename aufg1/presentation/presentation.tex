@@ -1,0 +1,73 @@
+% Please compile using lualatex
+% Looks better with Mozilla's font "Fira" installed (https://github.com/mozilla/Fira/)
+\documentclass[xcolor = dvipsnames, notheorems]{beamer}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage[ngerman]{babel}
+
+\title{Methoden der Numerik}
+\date{\today}
+\author{Christina X., Julian Lüken}
+\institute{Mathematisches Institut Göttingen}
+
+\usetheme[numbering=none]{metropolis}
+\renewcommand{\emph}[1]{\textcolor[HTML]{EB801A}{#1}}
+\newcommand{\qedcolor}[1]{\textcolor[HTML]{22373A}{#1}}
+\setbeamercolor{section in head/foot}{fg=normal text.bg, bg=structure.fg}
+\setbeamercovered{transparent}
+
+\setenumerate{align=left, leftmargin=*}
+\setitemize{align=left, leftmargin=*, label=\emph{$\bullet$}}
+
+\DeclareMathOperator{\rel}{\sim_R}
+
+\newcommand{\vth}{\vspace{4pt}}
+\theoremstyle{definition}
+\newtheorem{definition}	{Definition:\vth}
+\newtheorem{example}	{Beispiel:\vth}
+\newtheorem{theorem}	{Satz:\vth}
+\newtheorem{corollary}	{Korollar:\vth}
+\newtheorem{remark}		{Bemerkung:\vth}
+
+\renewenvironment{proof}[1][Beweis. ]{\setbeamercovered{invisible}\textbf{#1}}{\begin{flushright}\qedcolor{$\blacksquare$}\end{flushright}\setbeamercovered{transparent}}
+
+\newenvironment{proofbegin}[1][Beweis. ]{\setbeamercovered{invisible}\textbf{#1}}
+
+\newenvironment{proofend}{}{\begin{flushright}\qedcolor{$\blacksquare$}\end{flushright}\setbeamercovered{transparent}}
+
+
+\begin{document}
+% Title page
+\begin{frame}
+	\maketitle
+\end{frame}
+
+\section{Aufgabe 1 - Wärmegleichung}
+\begin{frame}
+\frametitle{Wärmegleichung}
+	Die Wärmegleichung lautet
+	$$ \frac{\partial u}{\partial t} -\nabla^2 u$$
+	Mit $u: \Omega \times \mathbb{R}^+ \rightarrow \mathbb{R}$ mit folgenden Randbedingungen:
+	\begin{itemize}
+		\item $ u(x,t) = R$ für $ x \in \partial \Omega$	
+		\item $ u(x,0) = f(x) $, wobei $f$ beliebig aber fest.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Diskretisierung, Variante 1}
+	Nimm endlich viele, äquidistante Stellen aus $\Omega$, sodass Folgen entstehen mit $x_i = ih + x_0$ und $y_j = jh + y_0$. Wähle zusätzlich für die Zeit $t_k = k\Delta t + t_0$ Wir schreiben $U_{i,j}^k$ für die $i,j$-te Stelle zum Zeitpunkt $k$. O.B.d.A. nehmen wir an, dass wir einen quadratischen Bereich diskretisieren, d.h. für jedes $k \in \mathbb{N}$ entsteht eine $m \times m$ Matrix. Zum Zeitpuntk $k=0$ haben wir dann:
+	$$
+	\begin{pmatrix}
+		u^0_{0,0}& 		u^0_{0,1}& \cdots 	\\
+		u^0_{1,0}&		\cdots&				\\
+		\cdots &		&			u^0_{m,m}
+	\end{pmatrix}
+	$$
+\end{frame}
+
+\end{document}
