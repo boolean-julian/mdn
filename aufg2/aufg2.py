@@ -141,7 +141,7 @@ def quasi_newton_broyden(curr, atol = 10**(-11)):
 	alphas = [2**(1-i) for i in range(11)]
 	
 	while ys[-1] > atol:
-		#line search
+		#line search uh
 		fargmin = [func(xs[-1] + a*p) for a in alphas]
 		alpha = alphas[np.argmin(fargmin)]
 		
