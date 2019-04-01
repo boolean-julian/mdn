@@ -1,7 +1,7 @@
-This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  24 MAR 2019 17:56
+This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  1 APR 2019 11:13
  restricted system commands enabled.
-**C:/Users/julian/git/mdn/aufg1/presentation/presentation.tex
-(C:/Users/julian/git/mdn/aufg1/presentation/presentation.tex
+**C:/Users/julian/git/mdn/presentation/presentation.tex
+(C:/Users/julian/git/mdn/presentation/presentation.tex
 LaTeX2e <2018-04-01> patch level 5
 Lua module: luaotfload-main 2018/09/24 2.90001 OpenType layout system.
 Lua module: lualibs 2018-09-21 2.6 ConTeXt Lua standard libraries.
@@ -32,7 +32,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.539 seconds ("C:/Program File
+luaotfload | main : initialization completed in 0.664 seconds ("C:/Program File
 s/MiKTeX 2.9/tex/latex/beamer/beamer.cls"
 Document Class: beamer 2018/12/02 v3.55 A class for typesetting presentations
 ("C:/Program Files/MiKTeX 2.9/tex/latex/beamer/beamerbasemodes.sty"
@@ -1432,6 +1432,61 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 ] [4
 
 ]
+[5
+
+] [6
+
+]
+Overfull \vbox (11.20822pt too high) detected at line 116
+ []
+
+[7
+
+] [8
+
+] [9
+
+]
+
+Package fontspec Info: Font family 'FiraSansLight(1)' created for font 'Fira
+(fontspec)             Sans Light' with options
+(fontspec)             [Ligatures=TeX,ItalicFont={Fira Sans Light
+(fontspec)             Italic},BoldFont={Fira Sans},BoldItalicFont={Fira Sans
+(fontspec)             Italic},Numbers={Monospaced}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"FiraSansLight:mode=node;script=latn;language=DFLT;+tl
+ig;+tnum;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"FiraSansLight:mode=node;script=latn;language=DFLT;+tl
+ig;+tnum;+smcp;"
+(fontspec)             - 'bold' (bx/n) with NFSS spec.:
+(fontspec)             <->"FiraSans:mode=node;script=latn;language=DFLT;+tlig;+t
+num;"
+(fontspec)             - 'bold small caps'  (bx/sc) with NFSS spec.:
+(fontspec)             <->"FiraSans:mode=node;script=latn;language=DFLT;+tlig;+t
+num;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"FiraSansLightItalic:mode=node;script=latn;language=DF
+LT;+tlig;+tnum;"
+(fontspec)             - 'italic small caps'  (m/itsc) with NFSS spec.:
+(fontspec)             <->"FiraSansLightItalic:mode=node;script=latn;language=DF
+LT;+tlig;+tnum;+smcp;"
+(fontspec)             - 'bold italic' (bx/it) with NFSS spec.:
+(fontspec)             <->"FiraSansItalic:mode=node;script=latn;language=DFLT;+t
+lig;+tnum;"
+(fontspec)             - 'bold italic small caps'  (bx/itsc) with NFSS spec.:
+(fontspec)             <->"FiraSansItalic:mode=node;script=latn;language=DFLT;+t
+lig;+tnum;+smcp;"
+
+ [10
+
+] [11
+
+]
 \tf@nav=\write6
 
 \openout6 = presentation.nav
@@ -1441,41 +1496,48 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 \tf@snm=\write8
 
 \openout8 = presentation.snm
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 73.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 73.
-
-(./presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 73.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 73.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 200.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 200.
+ (./presentation.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 200.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 200.
 Package rerunfilecheck Info: File `presentation.out' has not changed.
-(rerunfilecheck)             Checksum: A3802A3EDD08EEA5C25264F0A0B6706E;63.
+(rerunfilecheck)             Checksum: 2BCC34CC8D8EB51607D77CFB0B174BF7;127.
 )
 
 Here is how much of LuaTeX's memory you used:
- 33652 strings out of 494407
+ 33785 strings out of 494407
  100000,953878 words of node,token memory allocated
- 6874 words of node memory still in use:
-   69 hlist, 16 vlist, 8 rule, 39 disc, 2 local_par, 42 math, 168 glue, 66 kern,
- 23 penalty, 400 glyph, 109 attribute, 72 glue_spec, 109 attribute_list, 3 write
-, 16 pdf_colorstack nodes
-   avail lists: 1:2,2:166,3:99,4:74,5:109,6:12,7:845,8:10,9:119,10:14,11:55,12:1
-
- 36545 multiletter control sequences out of 65536+200000
- 73 fonts using 16826735 bytes
- 80i,13n,100p,1869b,753s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 22025 words of node memory still in use:
+   310 hlist, 19 vlist, 26 rule, 2 disc, 2 local_par, 374 math, 931 glue, 15 ker
+n, 16 penalty, 943 glyph, 616 attribute, 72 glue_spec, 616 attribute_list, 3 wri
+te, 16 pdf_colorstack nodes
+   avail lists: 1:2,2:385,3:106,4:74,5:217,6:12,7:2905,8:65,9:496,10:14,11:162,1
+2:1
+ 36611 multiletter control sequences out of 65536+200000
+ 101 fonts using 23734463 bytes
+ 80i,15n,100p,1863b,753s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/opentype/public/fira/firasans-lightitalic.otf
 ><C:/Program Files/MiKTeX 2.9/fonts/opentype/public/fira/firasans-light.otf><C:/
 Program Files/MiKTeX 2.9/fonts/opentype/public/fira/firasans-regular.otf><C:/Pro
 gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program File
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmss10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmex7.pfb><C:/Program Files/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cmextra/cmex9.pfb><C:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmmi9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss1
+0.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/
+Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss9.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
-Output written on presentation.pdf (4 pages, 71496 bytes).
+Output written on presentation.pdf (11 pages, 161245 bytes).
 
-PDF statistics: 92 PDF objects out of 1000 (max. 8388607)
- 10 named destinations out of 1000 (max. 131072)
- 24 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 171 PDF objects out of 1000 (max. 8388607)
+ 25 named destinations out of 1000 (max. 131072)
+ 32 words of extra memory for PDF output out of 10000 (max. 100000000)
 

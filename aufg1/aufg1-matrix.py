@@ -8,7 +8,7 @@ def L(N, h = 1):
 	B = np.diag([1]*(N**2-1), -1)
 	C = np.diag([1]*(N**2-N), N)
 
-	return h * (A+B+B.T+C+C.T)*0.25 + np.eye(size*size)
+	return h * (A+B+B.T+C+C.T) * 0.25 + np.eye(size*size)
 
 def create_image(size, boundary = 0):
 	#img = np.random.rand(size, size)
@@ -52,8 +52,10 @@ def make_movie(U, A, N, size, heat=False):
 
 	os.system("ffmpeg -f image2 -r 30 -i video2/frame%03d.png -vcodec mpeg4 -y video2.mp4")
 
-size = 100
+size = 4
 frames = 300
-A =L(size)
-U = create_image(size)
-make_movie(U, A, frames, size)
+A = L(size)
+
+print(A)
+#U = create_image(size)
+#make_movie(U, A, frames, size)

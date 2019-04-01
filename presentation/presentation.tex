@@ -11,7 +11,7 @@
 
 \title{Methoden der Numerik}
 \date{\today}
-\author{Christina X., Julian Lüken}
+\author{Christina Eilers, Julian Lüken}
 \institute{Mathematisches Institut Göttingen}
 
 \usetheme[numbering=none]{metropolis}
@@ -50,7 +50,7 @@
 \begin{frame}
 \frametitle{Wärmegleichung}
 	Die Wärmegleichung lautet
-	$$ \frac{\partial u}{\partial t} -\nabla^2 u$$
+	$$ \frac{\partial u}{\partial t} - \alpha \nabla^2 u$$
 	Mit $u: \Omega \times \mathbb{R}^+ \rightarrow \mathbb{R}$ mit folgenden Randbedingungen:
 	\begin{itemize}
 		\item $ u(x,t) = R$ für $ x \in \partial \Omega$	
@@ -59,15 +59,150 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Diskretisierung, Variante 1}
-	Nimm endlich viele, äquidistante Stellen aus $\Omega$, sodass Folgen entstehen mit $x_i = ih + x_0$ und $y_j = jh + y_0$. Wähle zusätzlich für die Zeit $t_k = k\Delta t + t_0$ Wir schreiben $U_{i,j}^k$ für die $i,j$-te Stelle zum Zeitpunkt $k$. O.B.d.A. nehmen wir an, dass wir einen quadratischen Bereich diskretisieren, d.h. für jedes $k \in \mathbb{N}$ entsteht eine $m \times m$ Matrix. Zum Zeitpuntk $k=0$ haben wir dann:
+\frametitle{Diskretisierung der Wärmegleichung}
+	Nimm endlich viele, äquidistante Stellen aus $\Omega$, sodass Folgen entstehen mit $x_i = ih + x_0$ und $y_j = jh + y_0$. Wähle zusätzlich für die Zeit $t_k = k\Delta t + t_0$ Wir schreiben $U_{i,j}^k$ für die $i,j$-te Stelle zum Zeitpunkt $k$. Für jedes $k \in \mathbb{N}$ entsteht eine $m \times m$ Matrix. Zum Zeitpuntk $k$ haben wir dann:
 	$$
 	\begin{pmatrix}
-		u^0_{0,0}& 		u^0_{0,1}& \cdots 	\\
-		u^0_{1,0}&		\cdots&				\\
-		\cdots &		&			u^0_{m,m}
+		u^k_{0,0}& 		u^k_{0,1}& \cdots & u^k_{0,m} 	\\
+		u^k_{1,0}&		\ddots&			&\vdots	\\
+		\vdots & & &	\\
+		u^k_{m,0}&	\cdots	&			 & u^k_{m,m}
 	\end{pmatrix}
 	$$
 \end{frame}
+\begin{frame}
+\frametitle{Diskretisierung der Wärmegleichung}
+	Schreibe diese Matrix als Vektor, damit wir einen linearen Operator in Form einer Matrix darauf anwenden können, folgendermaßen:
+	$$ u^k =
+	\begin{pmatrix}
+		u^k_{0,0} \\
+		u^k_{0,1} \\
+		\vdots \\
+		u^k_{0,m} \\
+		u^k_{1,0} \\
+		u^k_{1,1} \\
+		\vdots \\
+		u^k_{m,m}
+	\end{pmatrix}
+	$$
+\end{frame}
+\begin{frame}
+\frametitle{Diskretisierung der Wärmegleichung}
+	Aus der Taylor-Entwicklung folgt für die Ableitung nach $t$
+	$$\frac{\partial u}{\partial t}(x,y,t) = \frac{u(x,y,t+\Delta t) - u(x,y,t)}{\Delta t} + O(\Delta t^2)$$
+	und für den Laplace-Operator
+	\begin{multline*}
+		\nabla^2u(x,y,t) = \frac{1}{4h^2} \bigg(4u(x,y,t) \\- u(x-h,y,t) - u(x+h,y,t) \\- u(x,y-h,t) - u(x,y+h,t) \bigg) + O(h^4)
+	\end{multline*}
+\end{frame}
+\begin{frame}
+\frametitle{Diskretisierung der Wärmegleichung}
+	Für den diskreten Fall (und unter der Annahme, dass bei den Gleichungen von vorhin der Fehlerterm für hinreichend kleine $h$ und $\Delta t$ wegfällt), erhalten wir folgende Matrix:
+	$$
+		A = \frac{1}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
+	$$
+	wobei
+	$$
+	G =\begin{pmatrix}
+			\mathbf{0} 	& \mathbf{I} 	& \mathbf{0} 	& 				& \cdots 		&				& \mathbf{0} 	\\
+			\mathbf{I}	& \mathbf{0} 	& \mathbf{I} 	& 				&				& 				&			 	\\
+			\mathbf{0}	& \mathbf{I}	&				& 				& 				&				&				\\
+			\vdots		&				&				& 				& \ddots		&				& \vdots		\\
+						&				&				&				&				& \mathbf{0}	& \mathbf{I}	\\
+			\mathbf{0}	&				&				&				&				& \mathbf{I}	& \mathbf{0}	\\
+		\end{pmatrix}
+	$$
+	eine Blockmatrix mit $m \times m$ Einheitsmatrizen auf den Nebendiagonalen.
+\end{frame}
+\begin{frame}
+\frametitle{Diskretisierung der Wärmegleichung}
+	Durch Umstellen der Wärmegleichung mit dem $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
+	$$u^{k+1} = ((1-\alpha) A+ \alpha I)u^k N = B_{\alpha}u^k$$
+	wobei $\alpha \in [0,1]$ eine Konstante ist, die die Ausbreitungsgeschwindigkeit der Wärme im vorhandenen Medium repräsentiert. Mehrfachanwendung des Operators steht für größeres $\Delta t$. Wählt man mehr Samples, so wird $h$ kleiner.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Zweite Variante}
+	Man kann die Wärmegleichung auch leichter simulieren mit $u^k$ in Matrixform
+	$$u^{k+1} = ((I+L)((I+L)u^k)^T)^T = (I+L)u^k (I+L)^T$$ 
+
+		$$ L = \frac{1}{4h^2}\text{tridiag}(1,-4,1) $$
+
+
+
+\section{Aufgabe 2 - Newton-Verfahren}
+\begin{frame}
+\frametitle{Lösungen}
+	\footnotesize
+	\begin{center}
+		\begin{tabular}{r || l | l | l}
+			& klassisch & BFGS & Broyden\\ \hline \hline
+			$f(x)$ &$2291.020503182124$ &$2291.0205031821224$ &$2291.020503182123$\\
+			$\nabla f(x)$	&$\begin{pmatrix}
+													0 \\
+													-1.137 \\
+													0.941 \\
+													-0.284 \\
+													5.684 \\
+													0 \\
+													0
+							\end{pmatrix} \cdot 10^{-13}$
+							&$\begin{pmatrix}
+													-2.274 \\ 
+													67.075 \\
+													21.245 \\
+													-7.248 \\
+													37.232 \\
+													-2.256 \\
+													-2.487
+							\end{pmatrix} \cdot 10^{-13}$
+							&$\begin{pmatrix}
+													-3.411 \\
+													-14.780 \\
+													-4.814 \\
+													1.705 \\
+													86.118 \\
+													-3.606 \\
+													0.249 \\
+							\end{pmatrix} \cdot 10^{-13}$\\
+		\end{tabular}
+	\end{center}
+	\normalsize
+\end{frame}
+\begin{frame}
+\frametitle{Hesse-Matrizen}
+	\tiny
+		$$H^{-1} = \begin{pmatrix}
+			&2.151 &0.598 &3.538 &16.956 &-0.078 &-2.615 &-0.039 \\
+			&0.598 &3.288 &0.121 &22.659 &0.310 &13.016 &-0.011 \\
+			&3.538 &0.121 &13.622 &45.657 &-0.220 &-8.099 &-0.260 \\
+			&16.956 &22.659 &45.657 &323.998 &1.294 &58.392 &-0.897 \\
+			&-0.078 &0.310 &-0.220 &1.294 &0.148 &2.717 &0.001 \\
+			&-2.615 &13.016 &-8.099 &58.392 &2.717 &93.675 &0.047 \\
+			&-0.039 &-0.011 &-0.260 &-0.897 &0.001 &0.047 &3.256 \\
+		\end{pmatrix} \cdot 10^{-3}$$
+		$$H^{-1}_\text{BFGS} = \begin{pmatrix}
+			&1.992 &0.337 &3.517 &14.757 &-0.068 &-3.207 &-0.025 \\
+			&0.337 &2.532 &0.301 &17.282 &0.273 &10.557 &-0.003 \\
+			&3.517 &0.301 &13.449 &46.290 &-0.189 &-7.443 &-0.278 \\
+			&14.757 &17.282 &46.290 &284.436 &1.163 &42.147 &-0.838 \\
+			&-0.068 &0.273 &-0.189 &1.163 &0.135 &2.584 &-0.014 \\
+			&-3.207 &10.557 &-7.443 &42.147 &2.584 &80.445 &0.562 \\
+			&-0.025 &-0.003 &-0.278 &-0.838 &-0.014 &0.562 &3.115
+		\end{pmatrix} \cdot 10^{-3}$$
+		$$H^{-1}_\text{Broyden} = \begin{pmatrix}
+			&1.003 &0.353 &2.534 &10.787 &-0.024 &-0.808 &-0.305 \\
+			&0.016 &0.559 &1.185 &4.623 &0.082 &4.472 &-0.130 \\
+			&0.035 &0.129 &9.330 &30.184 &-0.035 &-1.636 &-0.773 \\
+			&0.301 &4.001 &62.421 &234.475 &-0.381 &2.729 &-5.924 \\
+			&-0.171 &0.436 &-1.168 &-0.179 &0.145 &2.657 &0.025 \\
+			&1.258 &-0.488 &22.002 &72.069 &0.185 &7.744 &-1.962 \\
+			&0.009 &-0.057 &-1.015 &-3.702 &0.007 &-0.004 &1.718
+		\end{pmatrix} \cdot 10^{-3}$$
+	\normalsize
+\end{frame}
+
+
 
 \end{document}
