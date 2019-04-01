@@ -84,6 +84,17 @@ def _save_step_size_graph(xs, filename):
 	plt.plot(ls, ps)
 	plt.savefig("{}.png".format(filename))
 
+def _save_funcvalue_graph(xs, filename):
+	plt.figure(filename)
+	plt.title(filename)
+	ls = np.arange(len(xs))
+	ps = []
+	for e in xs:
+		ps.append( func(e) )
+	plt.plot(ls, ps)
+	plt.savefig("{}.png".format(filename))
+
+
 # newton related things
 def newton_with_hessian(curr, atol = 10**(-11)):
 	xs = [curr]
@@ -161,7 +172,7 @@ def quasi_newton_broyden(curr, atol = 10**(-11)):
 
 	return xs, ys, Binv
 
-# ignore this
+""" for LaTeX
 def mat_print(A):
 	s = ""
 	for row in A:
@@ -169,24 +180,25 @@ def mat_print(A):
 			s = s + "&{:4.3f} ".format(cell)
 		s += "\\\\\n"
 	print(s)
+"""
 
 x = [0,0,0,0,0,0,0]
 
 xs, ys, H_inv = newton_with_hessian(x)
 _save_iteration_graph(ys, "iteration-hessian")
 _save_step_size_graph(xs, "step-size-hessian")
-mat_print(H_inv*10**3)
+_save_funcvalue_graph(xs, "funcvalue-hessian")
 
 print(func(xs[-1]), gradf(xs[-1]), "\n")
 
 xs, ys, H_inv = quasi_newton_bfgs(x)
 _save_iteration_graph(ys, "iteration-bfgs")
 _save_step_size_graph(xs, "step-size-bfgs")
-
+_save_funcvalue_graph(xs, "funcvalue-bfgs")
 print(func(xs[-1]), gradf(xs[-1]), "\n")
 
 xs, ys, H_inv = quasi_newton_broyden(x)
 _save_iteration_graph(ys, "iteration-broyden")
 _save_step_size_graph(xs, "step-size-broyden")
-
+_save_funcvalue_graph(xs, "funcvalue-broyden")
 print(func(xs[-1]), gradf(xs[-1]))

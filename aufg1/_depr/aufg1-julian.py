@@ -14,7 +14,7 @@ def tridiag(b,a,c,N):
 	A = np.diag([a]*N, 0)
 	B = np.diag([b]*(N-1), -1)
 	C = np.diag([c]*(N-1), 1)
-	return 0.25*np.array(A+B+C, dtype=np.float64)
+	return np.array(A+B+C, dtype=np.float64)
 
 @jit
 def create_image(size, boundary = 0):
@@ -32,10 +32,10 @@ def create_image(size, boundary = 0):
 
 
 # iteration using two matrices
-res = (np.eye(size) + tridiag(1, -2, 1, size))
+res = (np.eye(size) + 0.25*tridiag(1, -2, 1, size))
 def iterate_matrix(A,k=1):
 	for _ in range(k):
-		A = res@A@res
+		A = 0.5 * (res@A + A@res)
 	return A
 
 # color mapping

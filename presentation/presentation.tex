@@ -92,14 +92,14 @@
 	$$\frac{\partial u}{\partial t}(x,y,t) = \frac{u(x,y,t+\Delta t) - u(x,y,t)}{\Delta t} + O(\Delta t^2)$$
 	und für den Laplace-Operator
 	\begin{multline*}
-		\nabla^2u(x,y,t) = \frac{1}{4h^2} \bigg(4u(x,y,t) \\- u(x-h,y,t) - u(x+h,y,t) \\- u(x,y-h,t) - u(x,y+h,t) \bigg) + O(h^4)
+		\nabla^2u(x,y,t) = \frac{1}{4h^2} \bigg(u(x-h,y,t) + u(x+h,y,t) \\+ u(x,y-h,t) + u(x,y+h,t) - 4u(x,y,t) \bigg) + O(h^4)
 	\end{multline*}
 \end{frame}
 \begin{frame}
 \frametitle{Diskretisierung der Wärmegleichung}
 	Für den diskreten Fall (und unter der Annahme, dass bei den Gleichungen von vorhin der Fehlerterm für hinreichend kleine $h$ und $\Delta t$ wegfällt), erhalten wir folgende Matrix:
 	$$
-		A = \frac{1}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
+		A = \frac{\alpha}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
 	$$
 	wobei
 	$$
@@ -114,20 +114,14 @@
 	$$
 	eine Blockmatrix mit $m \times m$ Einheitsmatrizen auf den Nebendiagonalen.
 \end{frame}
+
+
 \begin{frame}
 \frametitle{Diskretisierung der Wärmegleichung}
-	Durch Umstellen der Wärmegleichung mit dem $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
-	$$u^{k+1} = ((1-\alpha) A+ \alpha I)u^k N = B_{\alpha}u^k$$
-	wobei $\alpha \in [0,1]$ eine Konstante ist, die die Ausbreitungsgeschwindigkeit der Wärme im vorhandenen Medium repräsentiert. Mehrfachanwendung des Operators steht für größeres $\Delta t$. Wählt man mehr Samples, so wird $h$ kleiner.
+	Durch Umstellen der Wärmegleichung mit $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
+	$$u^{k+1} = (A+I)u^k$$
+	Mehrfachanwendung des Operators steht für größeres $\Delta t$. Wählt man mehr Samples, so wird $h$ kleiner.
 \end{frame}
-
-
-\begin{frame}
-\frametitle{Zweite Variante}
-	Man kann die Wärmegleichung auch leichter simulieren mit $u^k$ in Matrixform
-	$$u^{k+1} = ((I+L)((I+L)u^k)^T)^T = (I+L)u^k(I+L)^T = (I+L)u^k(I+L)$$ 
-	wobei
-	$$ L = \frac{1}{4h^2}\text{tridiag}(1,-2,1) $$.
 
 
 
@@ -202,7 +196,4 @@
 		\end{pmatrix} \cdot 10^{-3}$$
 	\normalsize
 \end{frame}
-
-
-
 \end{document}

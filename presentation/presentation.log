@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  1 APR 2019 11:13
+This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  1 APR 2019 20:53
  restricted system commands enabled.
 **C:/Users/julian/git/mdn/presentation/presentation.tex
 (C:/Users/julian/git/mdn/presentation/presentation.tex
@@ -32,7 +32,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.664 seconds ("C:/Program File
+luaotfload | main : initialization completed in 0.570 seconds ("C:/Program File
 s/MiKTeX 2.9/tex/latex/beamer/beamer.cls"
 Document Class: beamer 2018/12/02 v3.55 A class for typesetting presentations
 ("C:/Program Files/MiKTeX 2.9/tex/latex/beamer/beamerbasemodes.sty"
@@ -1496,11 +1496,11 @@ lig;+tnum;+smcp;"
 \tf@snm=\write8
 
 \openout8 = presentation.snm
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 200.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 200.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 199.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 199.
  (./presentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 200.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 200.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 199.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 199.
 Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: 2BCC34CC8D8EB51607D77CFB0B174BF7;127.
 )
@@ -1512,7 +1512,7 @@ Here is how much of LuaTeX's memory you used:
    310 hlist, 19 vlist, 26 rule, 2 disc, 2 local_par, 374 math, 931 glue, 15 ker
 n, 16 penalty, 943 glyph, 616 attribute, 72 glue_spec, 616 attribute_list, 3 wri
 te, 16 pdf_colorstack nodes
-   avail lists: 1:2,2:385,3:106,4:74,5:217,6:12,7:2905,8:65,9:496,10:14,11:162,1
+   avail lists: 1:2,2:385,3:106,4:74,5:182,6:12,7:2905,8:65,9:496,10:14,11:124,1
 2:1
  36611 multiletter control sequences out of 65536+200000
  101 fonts using 23734463 bytes
@@ -1535,7 +1535,7 @@ s/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
 blic/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
 nts/cm/cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
-Output written on presentation.pdf (11 pages, 161245 bytes).
+Output written on presentation.pdf (11 pages, 160467 bytes).
 
 PDF statistics: 171 PDF objects out of 1000 (max. 8388607)
  25 named destinations out of 1000 (max. 131072)
