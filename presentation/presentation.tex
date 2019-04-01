@@ -125,9 +125,9 @@
 \begin{frame}
 \frametitle{Zweite Variante}
 	Man kann die Wärmegleichung auch leichter simulieren mit $u^k$ in Matrixform
-	$$u^{k+1} = ((I+L)((I+L)u^k)^T)^T = (I+L)u^k (I+L)^T$$ 
-
-		$$ L = \frac{1}{4h^2}\text{tridiag}(1,-4,1) $$
+	$$u^{k+1} = ((I+L)((I+L)u^k)^T)^T = (I+L)u^k(I+L)^T = (I+L)u^k(I+L)$$ 
+	wobei
+	$$ L = \frac{1}{4h^2}\text{tridiag}(1,-2,1) $$.
 
 
 

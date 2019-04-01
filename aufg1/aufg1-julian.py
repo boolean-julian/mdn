@@ -5,51 +5,46 @@ from numba import jit
 
 np.set_printoptions(precision=3)
 
-size = 500
-frames = 10000
+size = 100
+frames = 1000
 
+# helper functions
 @jit
-def L(N):
-	A = np.diag([-2]*N, 0)
-	B = np.diag([1]*(N-1), -1)
-	C = np.diag([1]*(N-1), 1)
+def tridiag(b,a,c,N):
+	A = np.diag([a]*N, 0)
+	B = np.diag([b]*(N-1), -1)
+	C = np.diag([c]*(N-1), 1)
 	return 0.25*np.array(A+B+C, dtype=np.float64)
 
 @jit
 def create_image(size, boundary = 0):
-	#img = np.random.rand(size, size)
-	#big spot in center
 	
 	img = np.zeros((size,size))
-	"""
-	b = 10
-	for i in range(size//2-b, size//2+b):
-		for j in range(size//2-b, size//2+b):
-			img[i,j] = 1
-	"""
-	
-	c = 2*np.pi/(size-1)
+
+	c = np.pi/(size-1)
 	for i in range(size):
 		for j in range(size):
 			img[i,j] = np.sin(c*i)**2 * np.sin(c*j)**2
 
 	return img
 
-lap = L(size)
-I = np.eye(size)
-res = (I + lap)
-def iterate(A):
-	return (res@(res@A).T).T
+# iteration using 
 
 
-# just some fancy stuff
+# iteration using two matrices
+res = (np.eye(size) + tridiag(1, -2, 1, size))
+def iterate_matrix(A,k=1):
+	for _ in range(k):
+		A = res@A@res
+	return A
+
+# color mapping
 colors = np.array([
 	[0,		0,		127],
 	[0,		255,	0],
 	[255,	255,	0],
 	[255,	128,	0],
 	[255,	0,		0]], dtype=np.float64)
-
 @jit
 def _get_color(alpha):
 	n = len(colors)
@@ -70,20 +65,20 @@ def _project_color_space(U):
 	return A
 
 @jit
-def make_movie(U, N, heat=False):
+def make_movie(U, N, iterate):
 	for i in range(N):
-		print("{}%".format(i/N*100))
+		print("{:3.2f}%".format(i/N*100))
 		number = str(i).zfill(4)
 
-		filename = "video3/frame{}.png".format(number)
-			
+		filename = "video/frame{}.png".format(number)
+
 		a = Image.fromarray(_project_color_space(U))
 		a.save(filename)
 
-		U = iterate(U)
+		U = iterate(U, k=3)
 
-	os.system("ffmpeg -f image2 -r 30 -i video3/frame%04d.png -vcodec libx264 -crf 15 -y video3.mp4")
+	os.system("ffmpeg -f image2 -r 30 -i video/frame%04d.png -vcodec libx264 -crf 15 -y video3.mp4")
 
 W = create_image(size)
-make_movie(W, frames)
+make_movie(W, frames, iterate_matrix)
 
