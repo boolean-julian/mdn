@@ -6,9 +6,9 @@ import os
 
 # Parameters
 size = 100		# sqrt of samples
-frames = 3000 	# number of video frames
+frames = 900 	# number of video frames
 alpha = 1 		# intensity [0,1]
-k = 6 			# iterations per frame
+k = 6			# iterations per frame
 
 
 
@@ -53,16 +53,17 @@ def make_movie(U, N, alpha, k, iterate):
 		for _ in range(k):
 			U = iterate(U, alpha)
 
+
 	os.system("ffmpeg -f image2 -r 30 -i video/frame%04d.png -vcodec libx264 -crf 15 -y heatmap.mp4")
 
 
 
 # Implementation method #1 for FDM, element-wise
-@jit
+
 def get_neighbors(i,j):
     return [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
 
-@jit
+
 def iterate_for(A,alpha):
     U = np.zeros(np.shape(A))
     for i in range(len(A)):
@@ -78,33 +79,64 @@ def iterate_for(A,alpha):
 
 
 # Implementation method #2 for FDM, matrix-vector-multiplication
-@jit
+
 def tridiag(a,b,c,N):
     return np.diag([a]*(N-1), -1) + np.diag([b]*N, 0) + np.diag([c]*(N-1), 1)
 
-@jit
+
 def heat_matrix_vector(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
     return 0.25*alpha*(A+B+B.T)+np.eye(N*N)
 
 HMV = heat_matrix_vector(size, alpha)
-@jit
-def iterate_matrix_vector(A, alpha):
+
+def iterate_matrix_vector(A,bloop):
     B = (HMV @ A.reshape(len(A)**2, 1)).reshape(len(A),len(A))
     return B
 
 
 
 # Implementation method #3 for FDM, two matrix multiplications
-@jit
-def heat_matrix(N,alpha):
+
+def heat_matrix(N, alpha):
 	return 0.5*alpha*tridiag(1,-2,1, N) + np.eye(N)
 
 HMM = heat_matrix(size,alpha)
 @jit
-def iterate_matrix(A,alpha):
+def iterate_matrix(A, bloop):
 	return 0.5*(HMM@A + A@HMM)
+
+
+# Implementation of conjugate gradients
+
+def heat_matrix_vector_cg(N,alpha):
+    A = tridiag(1,-4,1, N**2)
+    B = np.diag([1]*(N**2-N), N)
+    return -0.25*alpha*(A+B+B.T)+np.eye(N*N)
+HMV_cg = heat_matrix_vector_cg(size, alpha)
+
+
+def iterate_cg(B, bloop):
+	b = B.reshape(size**2,1)
+	x = b
+	r = b - HMV_cg@x
+	d = r
+	
+
+	while np.linalg.norm(r) > 0.1:
+		temp1 = HMV_cg@d
+		temp2 = r.T@r
+
+		alpha = temp2 / (d.T@temp1)
+		x 		= x + alpha*d
+		r 		= r - alpha * temp1
+		beta 	= (r.T@r)/temp2
+		d 		= r+beta*d
+
+	return x.reshape(size,size)
+
+# Douglas Rachford
 
 
 

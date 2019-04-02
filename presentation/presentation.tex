@@ -1,6 +1,6 @@
 % Please compile using lualatex
 % Looks better with Mozilla's font "Fira" installed (https://github.com/mozilla/Fira/)
-\documentclass[xcolor = dvipsnames, notheorems]{beamer}
+\documentclass[xcolor = dvipsnames, notheorems, 10pt]{beamer}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{mathrsfs}
 \usepackage[ngerman]{babel}
+\usepackage{algorithm, algorithmic}
 
 \title{Methoden der Numerik}
 \date{\today}
@@ -87,7 +88,7 @@
 	$$
 \end{frame}
 \begin{frame}
-\frametitle{Diskretisierung der Wärmegleichung}
+\frametitle{Finite Differenzen}
 	Aus der Taylor-Entwicklung folgt für die Ableitung nach $t$
 	$$\frac{\partial u}{\partial t}(x,y,t) = \frac{u(x,y,t+\Delta t) - u(x,y,t)}{\Delta t} + O(\Delta t^2)$$
 	und für den Laplace-Operator
@@ -96,10 +97,10 @@
 	\end{multline*}
 \end{frame}
 \begin{frame}
-\frametitle{Diskretisierung der Wärmegleichung}
+\frametitle{Finite Differenzen}
 	Für den diskreten Fall (und unter der Annahme, dass bei den Gleichungen von vorhin der Fehlerterm für hinreichend kleine $h$ und $\Delta t$ wegfällt), erhalten wir folgende Matrix:
 	$$
-		A = \frac{\alpha}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
+		A_\alpha = \frac{\alpha}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
 	$$
 	wobei
 	$$
@@ -117,15 +118,112 @@
 
 
 \begin{frame}
-\frametitle{Diskretisierung der Wärmegleichung}
+\frametitle{Finite Differenzen}
 	Durch Umstellen der Wärmegleichung mit $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
-	$$u^{k+1} = (A+I)u^k$$
+	$$u^{k+1} = (A_\alpha +I)u^k$$
 	Mehrfachanwendung des Operators steht für größeres $\Delta t$. Wählt man mehr Samples, so wird $h$ kleiner.
 \end{frame}
 
+\begin{frame}
+\frametitle{Finite Differenzen II}
+	\begin{remark}
+		Wenn man $u^k$ als Matrix schreibt, so kann man ebenfalls mit $L_\alpha = 0.5 \cdot \alpha \cdot \text{tridiag}(1,-2,1) + I$ den gleichen Schritt folgendermaßen durchführen:
 
+		$$u^{k+1} = 0.5 \big( L_\alpha u^k + u^kL_\alpha \big)$$
+		Zwar werden so pro Schritt zwei Matrixmultiplikationen und eine Addition durchgeführt, allerdings nur mit $m \times m$ Matrizen statt mit $m^2 \times m^2$ Matrizen.
+	\end{remark}
+\end{frame}
+
+\begin{frame}
+\frametitle{Konjugierte Gradienten}
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\STATE $x_0 \gets 0 \in \mathbb{R}^7$
+			\STATE $H_0 = I$
+			\STATE $p_0 = -\nabla f(x_0)$
+			\STATE $k = 0$
+			\WHILE{$||\nabla f(x)||_2 \geq 10^{-11}$}
+				\STATE $\alpha \gets \text{argmin}_{\alpha \in \mathbb{R}}\, f(x_k + \alpha p_k)$
+				\STATE $s_k \gets \alpha p_k$
+				\STATE $x_{k+1} \gets x_k+s_k$
+				\STATE $y_k \gets \nabla f(x_{k+1}) - \nabla f(x_k)$
+				\STATE $H_k = \text{update}(H_k)$
+				\STATE $k \gets k+1$
+			\ENDWHILE
+			\RETURN $x_k$
+		\end{algorithmic}
+		\caption{Quasi-Newton-Verfahren}
+	\end{algorithm}
+\end{frame}
+
+\begin{frame}
+\frametitle{Gauss-Seidel}
+
+\end{frame}
 
 \section{Aufgabe 2 - Newton-Verfahren}
+\begin{frame}
+\frametitle{Problemstellung}
+	Löse
+		$$\min_{x \in \mathbb{R}^7} \quad f(x) = \frac{1}{2}||g(x)||_2^2$$
+	mit $g: \mathbb{R}^7 \rightarrow \mathbb{R}^8$, $\nabla g: \mathbb{R}^7 \rightarrow \mathbb{R}^{7 \times 8}$ und $\nabla^2 g: \mathbb{R}^7 \rightarrow \mathbb{R}^{7 \times 7 \times 8}$. $x_0 = 0$ und für die Lösung soll gelten $||\nabla f(\bar x)||_2 < 10^{-11}$
+\end{frame}
+
+\begin{frame}
+\frametitle{Newton-Verfahren}
+	Im Newton-Verfahren nutzen wir die Iterationsvorschrift
+	$$x_{n+1} = x_n - (\nabla^2 f(x))^{-1}\, \nabla f(x)$$
+	Oder in Pseudocode:
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\STATE $x \gets 0 \in \mathbb{R}^7$
+			\WHILE{$||\nabla f(x)||_2 \geq 10^{-11}$}
+				\STATE $H_\text{inv} \gets \nabla^2 f(x)$
+				\STATE $x \gets x - H_\text{inv}\nabla f(x)$ 
+			\ENDWHILE
+			\RETURN x
+		\end{algorithmic}
+		\caption{Newton-Verfahren}
+	\end{algorithm}
+	\begin{remark}
+		Das funktioniert nur, wenn $\nabla^2 f$ existiert und bekannt ist.
+	\end{remark}
+\end{frame}
+
+\begin{frame}
+\frametitle{Quasi-Newton-Verfahren}
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\STATE $x_0 \gets 0 \in \mathbb{R}^7$
+			\STATE $H_0 = I$
+			\STATE $p_0 = -\nabla f(x_0)$
+			\STATE $k = 0$
+			\WHILE{$||\nabla f(x)||_2 \geq 10^{-11}$}
+				\STATE $\alpha \gets \text{argmin}_{\alpha \in \mathbb{R}}\, f(x_k + \alpha p_k)$
+				\STATE $s_k \gets \alpha p_k$
+				\STATE $x_{k+1} \gets x_k+s_k$
+				\STATE $y_k \gets \nabla f(x_{k+1}) - \nabla f(x_k)$
+				\STATE $H_k = \text{update}(H_k)$
+				\STATE $k \gets k+1$
+			\ENDWHILE
+			\RETURN $x_k$
+		\end{algorithmic}
+		\caption{Quasi-Newton-Verfahren}
+	\end{algorithm}
+\end{frame}
+\begin{frame}
+\frametitle{Quasi-Newton-Updates}
+	Für die Funktion update auf der letzten Folie gibt es verschiedene Möglichkeiten, beispielsweise:
+	\begin{center}
+		\begin{tabular}{r|l}
+			BFGS 		&	$H_{k+1} = H_k + \frac{y_k y_k^T}{y_k^T s_k} + \frac{H_k s_k s_k^T H_k^T}{s_k^T H_k s_k}$\\
+			& \\
+			Broyden 	&	$H_{k+1} = H_k + \frac{s_k - H_k y_k}{y_k^T y_k} y_k^T$
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+
 \begin{frame}
 \frametitle{Lösungen}
 	\footnotesize
@@ -166,7 +264,7 @@
 \end{frame}
 \begin{frame}
 \frametitle{Hesse-Matrizen}
-	\tiny
+	\scriptsize
 		$$H^{-1} = \begin{pmatrix}
 			&2.151 &0.598 &3.538 &16.956 &-0.078 &-2.615 &-0.039 \\
 			&0.598 &3.288 &0.121 &22.659 &0.310 &13.016 &-0.011 \\
@@ -196,4 +294,80 @@
 		\end{pmatrix} \cdot 10^{-3}$$
 	\normalsize
 \end{frame}
+
+\begin{frame}
+	\begin{center}
+	\frametitle{Funktionswerte für Newton-Verfahren}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/funcvalue-hessian.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Funktionswerte für Quasi-Newton: BFGS}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/funcvalue-bfgs.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Funktionswerte für Quasi-Newton: Broyden}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/funcvalue-broyden.png}}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\frametitle{Grad für Newton-Verfahren}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/iteration-hessian.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Grad für Quasi-Newton: BFGS}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/iteration-bfgs.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Grad für Quasi-Newton: Broyden}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/iteration-broyden.png}}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\frametitle{Schrittweite für Newton-Verfahren}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/step-size-hessian.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Schrittweite für Quasi-Newton: BFGS}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/step-size-bfgs.png}}
+	\end{center}
+\end{frame}
+\begin{frame}
+\frametitle{Schrittweite für Quasi-Newton: Broyden}
+	\begin{center}
+		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/step-size-broyden.png}}
+	\end{center}
+\end{frame}
+
+
+
+
+
+\section{Aufgabe 3 - Norm}
+\begin{frame}
+	\frametitle{Problemstellung}
+	Sei
+		$$A = \begin{pmatrix}
+			1				& \frac{1}{2} 	& \frac{1}{4} 	& \frac{1}{7} 	& \\
+			\frac{1}{3}		& \frac{1}{5}	& \frac{1}{8}	& 				& \\
+			\frac{1}{6}		& \frac{1}{9}	&				& \ddots		& \\
+			\frac{1}{10}	& 				& \ddots		&				& \\
+		\end{pmatrix}$$
+	Was ist $||A||_2$ auf $10$ signifikante Stellen genau?
+
+\end{frame}
+
 \end{document}
