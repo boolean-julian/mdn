@@ -9,6 +9,7 @@
 \usepackage{mathrsfs}
 \usepackage[ngerman]{babel}
 \usepackage{algorithm, algorithmic}
+\usepackage{verbatim}
 
 \title{Methoden der Numerik}
 \date{\today}
@@ -136,23 +137,21 @@
 
 \begin{frame}
 \frametitle{Konjugierte Gradienten}
+	Wir setzen $K = I-A_\alpha$
 	\begin{algorithm}[H]
 		\begin{algorithmic}[1]
-			\STATE $x_0 \gets 0 \in \mathbb{R}^7$
-			\STATE $H_0 = I$
-			\STATE $p_0 = -\nabla f(x_0)$
-			\STATE $k = 0$
-			\WHILE{$||\nabla f(x)||_2 \geq 10^{-11}$}
-				\STATE $\alpha \gets \text{argmin}_{\alpha \in \mathbb{R}}\, f(x_k + \alpha p_k)$
-				\STATE $s_k \gets \alpha p_k$
-				\STATE $x_{k+1} \gets x_k+s_k$
-				\STATE $y_k \gets \nabla f(x_{k+1}) - \nabla f(x_k)$
-				\STATE $H_k = \text{update}(H_k)$
+			\STATE $k \gets 0$, $r_0 \gets b-Kx_0$, $d_0 \gets r_0$
+			\WHILE {$r_k^T r_k > \varepsilon$}
+				\STATE $\alpha_k = \frac{r_k^T r_k}{d_k^T K d_k}$
+				\STATE $x_{k+1} \gets x^k + \alpha_k d_k$
+				\STATE $r_{k+1} \gets r_k - \alpha_k K d_k$
+				\STATE $\beta_k \gets \frac{r_{k+1}^T r_{k+1}}{r_k^T r_k}$
+				\STATE $d_{k+1} \gets r_{k+1} + \beta_k d_k$
 				\STATE $k \gets k+1$
 			\ENDWHILE
 			\RETURN $x_k$
 		\end{algorithmic}
-		\caption{Quasi-Newton-Verfahren}
+		\caption{Konjugierte-Gradienten Verfahren}
 	\end{algorithm}
 \end{frame}
 
@@ -167,6 +166,7 @@
 	Löse
 		$$\min_{x \in \mathbb{R}^7} \quad f(x) = \frac{1}{2}||g(x)||_2^2$$
 	mit $g: \mathbb{R}^7 \rightarrow \mathbb{R}^8$, $\nabla g: \mathbb{R}^7 \rightarrow \mathbb{R}^{7 \times 8}$ und $\nabla^2 g: \mathbb{R}^7 \rightarrow \mathbb{R}^{7 \times 7 \times 8}$. $x_0 = 0$ und für die Lösung soll gelten $||\nabla f(\bar x)||_2 < 10^{-11}$
+	\vfill
 \end{frame}
 
 \begin{frame}
@@ -211,6 +211,7 @@
 		\caption{Quasi-Newton-Verfahren}
 	\end{algorithm}
 \end{frame}
+
 \begin{frame}
 \frametitle{Quasi-Newton-Updates}
 	Für die Funktion update auf der letzten Folie gibt es verschiedene Möglichkeiten, beispielsweise:
@@ -351,9 +352,6 @@
 		\includegraphics[width=.8\linewidth]{{c:/Users/julian/git/mdn/aufg2/step-size-broyden.png}}
 	\end{center}
 \end{frame}
-
-
-
 
 
 \section{Aufgabe 3 - Norm}

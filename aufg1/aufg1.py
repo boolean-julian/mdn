@@ -8,7 +8,7 @@ np.set_printoptions(suppress=True, precision=2)
 # Parameters
 size = 100		# sqrt of samples
 frames = 900 	# number of video frames
-alpha = 0.5		# intensity [0,1]
+alpha = 1		# intensity [0,1]
 k = 6			# iterations per frame
 
 
@@ -57,14 +57,16 @@ def make_movie(U, N, alpha, k, iterate):
 			U = iterate(U, alpha)
 			#U[K[i%len(K)]] = 1
 			
-		
-			
-			U[0,:]	= 0
-			U[-1,:]	= 0
-			U[:,-1]	= 0
-			U[:,0]	= 1
-			
-			
+			if i < N/2:
+				U[0,:]	= 0
+				U[-1,:]	= 0
+				U[:,-1]	= 0
+				U[:,0]	= 1
+			else:
+				U[0,:]	= 0
+				U[-1,:]	= 0
+				U[:,-1]	= 1
+				U[:,0]	= 0
 
 	os.system("ffmpeg -f image2 -r 30 -i video/frame%04d.png -vcodec libx264 -crf 15 -y heatmap.mp4")
 
@@ -121,7 +123,6 @@ def iterate_matrix(A, bloop):
 
 
 # Implementation of conjugate gradients
-
 def heat_matrix_vector_cg(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
@@ -148,6 +149,7 @@ def iterate_cg(B, bloop):
 	return x.reshape(size,size)
 
 # Douglas Rachford
+
 
 
 
