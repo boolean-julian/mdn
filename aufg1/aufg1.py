@@ -6,9 +6,9 @@ import os
 np.set_printoptions(suppress=True, precision=2)
 
 # Parameters
-size = 100		# sqrt of samples
-frames = 900 	# number of video frames
-alpha = 1		# intensity [0,1]
+size = 50		# sqrt of samples
+frames = 30 	# number of video frames
+alpha = 0.5		# intensity [0,1]
 k = 6			# iterations per frame
 
 
@@ -126,7 +126,7 @@ def iterate_matrix(A, bloop):
 def heat_matrix_vector_cg(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
-    return -0.25*alpha*(A+B+B.T)+np.eye(N*N)
+    return np.linalg.inv(0.25*alpha*(A+B+B.T)+np.eye(N*N))
 HMV_cg = heat_matrix_vector_cg(size, alpha)
 
 def iterate_cg(B, bloop):
@@ -135,7 +135,6 @@ def iterate_cg(B, bloop):
 	r = b - HMV_cg@x
 	d = r
 	
-
 	while np.linalg.norm(r) > 0.001:
 		temp1 = HMV_cg@d
 		temp2 = r.T@r
@@ -161,4 +160,4 @@ for i in range(len(A)):
 	for j in range(len(A[0])):
 		A[i,j] = np.sin(c*i)*np.sin(c*j)
 
-make_movie(A, frames, alpha, k, iterate_matrix)
+make_movie(A, frames, alpha, k, iterate_cg)

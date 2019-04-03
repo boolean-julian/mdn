@@ -137,7 +137,7 @@
 
 \begin{frame}
 \frametitle{Konjugierte Gradienten}
-	Wir setzen $K = I-A_\alpha$
+	Wir setzen $K = (A_\alpha + I)^{-1}$.
 	\begin{algorithm}[H]
 		\begin{algorithmic}[1]
 			\STATE $k \gets 0$, $r_0 \gets b-Kx_0$, $d_0 \gets r_0$
@@ -156,8 +156,16 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Gauss-Seidel}
+\frametitle{Konjugierte Gradienten}
+	\begin{remark}
+	Dieses Verfahren funktioniert nur für symmetrische, positiv definite Matrizen. 
+	Für $\alpha = 1$ hat die Verfahrensmatrix $(A_\alpha + I)$ keine Inverse, da dann jeder Diagonaleintrag der Matrix $0$ ist.
+	\end{remark}
+\end{frame}
 
+\begin{frame}
+\frametitle{Gauss-Seidel}
+	
 \end{frame}
 
 \section{Aufgabe 2 - Newton-Verfahren}
