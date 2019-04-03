@@ -88,8 +88,9 @@
 	\end{pmatrix}
 	$$
 \end{frame}
+
 \begin{frame}
-\frametitle{Finite Differenzen}
+\frametitle{Diskretisierung}
 	Aus der Taylor-Entwicklung folgt für die Ableitung nach $t$
 	$$\frac{\partial u}{\partial t}(x,y,t) = \frac{u(x,y,t+\Delta t) - u(x,y,t)}{\Delta t} + O(\Delta t^2)$$
 	und für den Laplace-Operator
@@ -97,8 +98,18 @@
 		\nabla^2u(x,y,t) = \frac{1}{4h^2} \bigg(u(x-h,y,t) + u(x+h,y,t) \\+ u(x,y-h,t) + u(x,y+h,t) - 4u(x,y,t) \bigg) + O(h^4)
 	\end{multline*}
 \end{frame}
+
+
 \begin{frame}
-\frametitle{Finite Differenzen}
+\frametitle{Explizites Euler-Verfahren}
+	
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Explizites Euler-Verfahren}
 	Für den diskreten Fall (und unter der Annahme, dass bei den Gleichungen von vorhin der Fehlerterm für hinreichend kleine $h$ und $\Delta t$ wegfällt), erhalten wir folgende Matrix:
 	$$
 		A_\alpha = \frac{\alpha}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
@@ -119,6 +130,12 @@
 
 
 \begin{frame}
+\frametitle{Implizites Euler-Verfahren}
+	
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Finite Differenzen}
 	Durch Umstellen der Wärmegleichung mit $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
 	$$u^{k+1} = (A_\alpha +I)u^k$$
@@ -137,7 +154,6 @@
 
 \begin{frame}
 \frametitle{Konjugierte Gradienten}
-	Wir setzen $K = (A_\alpha + I)^{-1}$.
 	\begin{algorithm}[H]
 		\begin{algorithmic}[1]
 			\STATE $k \gets 0$, $r_0 \gets b-Kx_0$, $d_0 \gets r_0$
@@ -164,7 +180,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Gauss-Seidel}
+\frametitle{Gauss-Elimination}
 	
 \end{frame}
 
@@ -376,15 +392,15 @@
 \end{frame}
 \begin{frame}
 \frametitle{Allgemeines Lösungsverfahren}
-	Es gilt nach Vorlesung $||A_n||_2 \leq ||A_m||_2 \leq lim k->oo ||A_k||_2 = ||A||_2 \leq ||A||_F = Pi/sqrt(6)$
-	mit $n \leq m$ und $A_n$ der linken oberen nxn-Teilmatrix von A.
+	Es gilt nach Vorlesung $$||A_n||_2 \leq ||A_m||_2 \leq \lim_{k \to \infty} ||A_k||_2 = ||A||_2 \leq ||A||_F = \frac{\pi}{\sqrt{6}}$$
+	mit $n \leq m$ und $A_n$ der linken oberen $n\times n$-Teilmatrix von $A$.
 
 	Setze $B := A^T A$.
 	
-	B ist symmetrisch und damit diagonalisierbar.
+	$B$ ist symmetrisch und damit diagonalisierbar.
 
-	Für den betragsgrößten Eigenwert $\lambda$ und seinen Eigenvektor v gilt $Bv = \lambda v$ und, da B diagonalisierbar
-	$||Bv||_2 = ||B||_2 * ||v||_2$, insgesamt 
+	Für den betragsgrößten Eigenwert $\lambda$ und seinen Eigenvektor v gilt $Bv = \lambda v$ und, da $B$ diagonalisierbar
+	$||Bv||_2 = ||B||_2 * ||v||_2$, insgesamt
 
 
 
@@ -393,17 +409,17 @@
 \frametitle{Untere Grenze}
 	$$||A_n||_2 = \sqrt{\rho(A_n^T A_n)} = \sqrt{\rho(B)} \quad \forall n \in \mathbb{N}$$
 	
-	Berechne diese untere Grenze für ein n:
+	Berechne diese untere Grenze für ein $n$:
 	
-	Das von-Mises-Verfahren liefert schnell eine Abschätzung an den betragsgrößten Eigenwert von B und gibt auch den dazugehörigen Eigenvektor v zurück.
+	Das von-Mises-Verfahren liefert schnell eine Abschätzung an den betragsgrößten Eigenwert von $B$ und gibt auch den dazugehörigen Eigenvektor $v$ zurück.
 
 
 \end{frame}
 \begin{frame}
 \frametitle{Obere Grenze}
-	Der Eigenvektor v, den man aus dem von-Mises-Verfahren erhält, ist normiert und hat nur positive Einträge. Außerdem sind die Einträge mit steigendem Index monoton fallend.
+	Der Eigenvektor $v$, den man aus dem von-Mises-Verfahren erhält, ist normiert und hat nur positive Einträge. Außerdem sind die Einträge mit steigendem Index monoton fallend.
 
-	Erweitere diesen Vektor nun auf m Dimensionen, indem für die Einträge $v_n+1, v_n+2, ..., v_m$ der Wert von $v_n$ angenommen wird und nenne ihn $v'$.
+	Erweitere diesen Vektor nun auf $m$ Dimensionen, indem für die Einträge $v_n+1, v_n+2, ..., v_m$ der Wert von $v_n$ angenommen wird und nenne ihn $v'$.
 	
 	Berechne dann $A_m^T A_m v' = B v'$
 	

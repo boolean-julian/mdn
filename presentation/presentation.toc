@@ -1,4 +1,0 @@
-\babel@toc {ngerman}{}
-\beamer@sectionintoc {1}{Aufgabe 1 - Wärmegleichung}{2}{0}{1}
-\beamer@sectionintoc {2}{Aufgabe 2 - Newton-Verfahren}{13}{0}{2}
-\beamer@sectionintoc {3}{Aufgabe 3 - Norm}{29}{0}{3}
