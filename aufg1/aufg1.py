@@ -2,16 +2,89 @@ import numpy as np
 from numba import jit
 from PIL import Image
 import os
+import sys
+
 
 np.set_printoptions(suppress=True, precision=2)
 
 # Parameters
 size = 50		# sqrt of samples
-frames = 30 	# number of video frames
-alpha = 0.5		# intensity [0,1]
-k = 6			# iterations per frame
+frames = 300 	# number of video frames
+alpha = 0.50	# intensity [0,1)
+k = 10			# iterations per frame
 
 
+"""
+GAUSS RELATED STUFF DO NOT TOUCH
+"""
+
+# Checks whether matrix is quadratic
+@jit
+def check_mat(A):
+	n = np.shape(A)[0]
+	if n != np.shape(A)[1]:
+		print("Error: Input matrix must have shape (n,n)")
+		sys.exit()
+	return n
+
+# Checks if dimension of b is n
+@jit
+def check_b(b, n):
+	return True if len(b) == n else False
+
+# Triangular segmentation of a matrix
+@jit
+def lu_zerlegung(A):
+	n = check_mat(A)
+
+	U = np.array(A, dtype="float64")
+	L = np.eye(n, dtype="float64")
+
+	for i in range(n-1):
+		for k in range(i+1, n):
+			L[k,i] = U[k,i] / U[i,i]
+			for j in range(i, n):
+				U[k,j] = U[k,j] - L[k,i] * U[i,j]
+
+	return L, U
+
+# It does what it says it does
+@jit
+def vorwaertselimination(A,b):
+	n = check_mat(A)
+
+	V = np.array(np.c_[A,np.array(b)], dtype="float64")
+	for i in range(n):
+		V[i] = V[i] * 1/V[i,i]
+		for j in range(i+1,n):
+			if V[i,i] != 0:
+				V[j] = V[j] - V[i] * V[j,i]/V[i,i]
+	return V
+
+# It does what it says it does
+@jit
+def rueckwaertselimination(A,b):
+	# check dimensions
+	n = check_mat(A)
+
+	B = np.array(np.c_[A, np.array(b)], dtype="float64")
+	for i in reversed(range(n)):
+		B[i] = B[i] * 1/B[i,i]
+		for j in reversed(range(i)):
+			if B[i,i] != 0:
+				B[j] = B[j] - B[i] * B[j,i]/B[i,i]
+
+	return B
+
+@jit
+def solve(A, b):
+	L, U = lu_zerlegung(A)
+	Lx = vorwaertselimination(L,b)
+	x = rueckwaertselimination(U,Lx[:,-1])
+	return x
+"""
+GAUSS OVER
+"""
 
 # Video related stuff
 colors = np.array([
@@ -42,6 +115,7 @@ def _project_color_space(U):
 
 
 #K = [(0,a) for a in range(size)] + [(a, size-1) for a in range(size)] + [(size-1,a) for a in range(size-1,-1,-1)] + [(a,0) for a in range(size-1,-1,-1)]
+@jit
 def make_movie(U, N, alpha, k, iterate):
 	for i in range(N):
 		print("{:3.2f}%".format(i/N*100))
@@ -56,7 +130,7 @@ def make_movie(U, N, alpha, k, iterate):
 			
 			U = iterate(U, alpha)
 			#U[K[i%len(K)]] = 1
-			
+			"""
 			if i < N/2:
 				U[0,:]	= 0
 				U[-1,:]	= 0
@@ -67,7 +141,7 @@ def make_movie(U, N, alpha, k, iterate):
 				U[-1,:]	= 0
 				U[:,-1]	= 1
 				U[:,0]	= 0
-
+			"""
 	os.system("ffmpeg -f image2 -r 30 -i video/frame%04d.png -vcodec libx264 -crf 15 -y heatmap.mp4")
 
 
@@ -97,7 +171,6 @@ def iterate_for(A,alpha):
 def tridiag(a,b,c,N):
     return np.diag([a]*(N-1), -1) + np.diag([b]*N, 0) + np.diag([c]*(N-1), 1)
 
-
 def heat_matrix_vector(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
@@ -108,7 +181,6 @@ HMV = heat_matrix_vector(size, alpha)
 def iterate_matrix_vector(A,bloop):
     B = (HMV @ A.reshape(len(A)**2, 1)).reshape(len(A),len(A))
     return B
-
 
 
 # Implementation method #3 for FDM, two matrix multiplications
@@ -122,20 +194,35 @@ def iterate_matrix(A, bloop):
 	return 0.5*(HMM@A + A@HMM)
 
 
-# Implementation of conjugate gradients
-def heat_matrix_vector_cg(N,alpha):
+def matrix_cg_explicit(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
     return np.linalg.inv(0.25*alpha*(A+B+B.T)+np.eye(N*N))
-HMV_cg = heat_matrix_vector_cg(size, alpha)
 
+def matrix_cg_implicit(N,alpha):
+	M = N*N
+
+	_L = tridiag(1,-4,1, M)
+	_I = np.diag([1]*(M-N), N)
+
+	A = 0.25*(_L + _I + _I.T)
+	
+	I = np.eye(M)
+
+	return I - alpha*A @ np.linalg.inv(alpha*A + I)
+
+
+HMV_cg = matrix_cg_explicit(size, alpha)
+
+# Implementation of conjugate gradients
+@jit
 def iterate_cg(B, bloop):
 	b = B.reshape(size**2,1)
 	x = b
 	r = b - HMV_cg@x
 	d = r
 	
-	while np.linalg.norm(r) > 0.001:
+	while np.linalg.norm(r) > 0.0001:
 		temp1 = HMV_cg@d
 		temp2 = r.T@r
 
@@ -147,9 +234,11 @@ def iterate_cg(B, bloop):
 
 	return x.reshape(size,size)
 
-# Douglas Rachford
-
-
+# Gauss Elimination
+HMV_gauss = matrix_cg_explicit(size, alpha)
+def iterate_gauss(B, bloop):
+	b = B.reshape(size**2,1)
+	return solve(HMV_gauss, b)[:,-1].reshape(size,size)
 
 
 # some random image to start off with
@@ -160,4 +249,29 @@ for i in range(len(A)):
 	for j in range(len(A[0])):
 		A[i,j] = np.sin(c*i)*np.sin(c*j)
 
-make_movie(A, frames, alpha, k, iterate_cg)
+make_movie(A, frames, alpha, k, iterate_gauss)
+
+
+#P = iterate_cg(A,alpha)
+#L = iterate_gauss(A,alpha)
+
+
+
+#Q = np.linalg.solve(HMV_cg, A.reshape(size**2,1)).reshape(size,size)
+#R = iterate_for(iterate_for(A,alpha),alpha)
+
+#print(np.allclose(P,Q) and np.allclose(P,R))
+#print(np.allclose(P,R))
+#print(P)
+#print(R)
+#print(HMV_cg)
+"""
+B = np.linalg.solve(HMV_cg, A.reshape(size**2,1))
+B = np.linalg.solve(HMV_cg, B).reshape(size,size)
+
+print(np.allclose(P,B))
+
+print(P)
+print()
+print(B)
+"""

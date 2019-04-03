@@ -364,7 +364,7 @@
 
 \section{Aufgabe 3 - Norm}
 \begin{frame}
-	\frametitle{Problemstellung}
+\frametitle{Problemstellung}
 	Sei
 		$$A = \begin{pmatrix}
 			1				& \frac{1}{2} 	& \frac{1}{4} 	& \frac{1}{7} 	& \\
@@ -373,7 +373,47 @@
 			\frac{1}{10}	& 				& \ddots		&				& \\
 		\end{pmatrix}$$
 	Was ist $||A||_2$ auf $10$ signifikante Stellen genau?
+\end{frame}
+\begin{frame}
+\frametitle{Allgemeines Lösungsverfahren}
+	Es gilt nach Vorlesung $||A_n||_2 \leq ||A_m||_2 \leq lim k->oo ||A_k||_2 = ||A||_2 \leq ||A||_F = Pi/sqrt(6)$
+	mit $n \leq m$ und $A_n$ der linken oberen nxn-Teilmatrix von A.
+
+	Setze $B := A^T A$.
+	
+	B ist symmetrisch und damit diagonalisierbar.
+
+	Für den betragsgrößten Eigenwert $\lambda$ und seinen Eigenvektor v gilt $Bv = \lambda v$ und, da B diagonalisierbar
+	$||Bv||_2 = ||B||_2 * ||v||_2$, insgesamt 
+
+
 
 \end{frame}
+\begin{frame}
+\frametitle{Untere Grenze}
+	$$||A_n||_2 = \sqrt{\rho(A_n^T A_n)} = \sqrt{\rho(B)} \quad \forall n \in \mathbb{N}$$
+	
+	Berechne diese untere Grenze für ein n:
+	
+	Das von-Mises-Verfahren liefert schnell eine Abschätzung an den betragsgrößten Eigenwert von B und gibt auch den dazugehörigen Eigenvektor v zurück.
+
+
+\end{frame}
+\begin{frame}
+\frametitle{Obere Grenze}
+	Der Eigenvektor v, den man aus dem von-Mises-Verfahren erhält, ist normiert und hat nur positive Einträge. Außerdem sind die Einträge mit steigendem Index monoton fallend.
+
+	Erweitere diesen Vektor nun auf m Dimensionen, indem für die Einträge $v_n+1, v_n+2, ..., v_m$ der Wert von $v_n$ angenommen wird und nenne ihn $v'$.
+	
+	Berechne dann $A_m^T A_m v' = B v'$
+	
+	Dies liefert eine obere Grenze von $||A||_2$
+\end{frame}
+
+\begin{frame}
+\frametitle{Lösung}
+	
+\end{frame}
+
 
 \end{document}
