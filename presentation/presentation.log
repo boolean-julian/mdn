@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  4 APR 2019 12:04
+This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6840 64-bit)  (format=lualatex 2019.3.12)  4 APR 2019 13:07
  restricted system commands enabled.
 **C:/Users/julian/git/mdn/presentation/presentation.tex
 (C:/Users/julian/git/mdn/presentation/presentation.tex
@@ -32,7 +32,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.645 seconds ("C:/Program File
+luaotfload | main : initialization completed in 0.606 seconds ("C:/Program File
 s/MiKTeX 2.9/tex/latex/beamer/beamer.cls"
 Document Class: beamer 2018/12/02 v3.55 A class for typesetting presentations
 ("C:/Program Files/MiKTeX 2.9/tex/latex/beamer/beamerbasemodes.sty"
@@ -1699,7 +1699,7 @@ X 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/font
 s/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
 blic/amsfonts/symbols/msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
 /amsfonts/symbols/msbm7.pfb>
-Output written on presentation.pdf (37 pages, 378832 bytes).
+Output written on presentation.pdf (37 pages, 378938 bytes).
 
 PDF statistics: 326 PDF objects out of 1000 (max. 8388607)
  78 named destinations out of 1000 (max. 131072)

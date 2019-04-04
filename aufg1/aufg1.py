@@ -8,12 +8,12 @@ import sys
 np.set_printoptions(suppress=True, precision=2)
 
 # Parameters
-size = 100		# sqrt of samples
-frames = 300 	# number of video frames
+size = 10		# sqrt of samples
+frames = 6		# number of video frames
 alpha = 0.5		# intensity [0,1)
-k = 30			# iterations per frame
+k = 2			# iterations per frame
 
-ALGO = "CG"		# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS"
+ALGO = "CG"	# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS"
 
 
 # Triangular segmentation of a matrix
@@ -114,6 +114,12 @@ def make_movie(U, N, alpha, k, iterate):
 			
 			U = iterate(U, alpha)
 			#U[K[i%len(K)]] = 1
+			
+			U[0,:]	= 0
+			U[-1,:]	= 0
+			U[:,-1]	= 0
+			U[:,0]	= 0
+
 			"""
 			if i < N/2:
 				U[0,:]	= 0
@@ -139,17 +145,17 @@ def tridiag(a,b,c,N):
 def euler_explicit(N,alpha):
     A = tridiag(1,-4,1, N**2)
     B = np.diag([1]*(N**2-N), N)
+    
     return 0.25*alpha*(A+B+B.T)+np.eye(N*N)
-
+    
 @jit
 def euler_implicit(N,alpha):
 	M = N*N
-
-	_L = tridiag(1,-4,1, M)
-	_I = np.diag([1]*(M-N), N)
+	
+	_L = tridiag(1,-4,1,N**2)
+	_I = np.diag([1]*(M-N),N)
 
 	A = 0.25*(_L + _I + _I.T)
-	
 	I = np.eye(M)
 
 	return I - alpha*A @ np.linalg.inv(alpha*A + I)
@@ -163,7 +169,7 @@ def laplace1D(N, alpha):
 def get_neighbors(i,j):
     return [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
 
-@jit
+
 def iterate_for(A,alpha):
     U = np.zeros(np.shape(A))
     for i in range(len(A)):
@@ -179,7 +185,7 @@ def iterate_for(A,alpha):
 # Implementation method #2 for FDM, matrix-vector-multiplication
 @jit
 def iterate_matrix_vector(A,bloop):
-    B = (H @ A.reshape(len(A)**2, 1)).reshape(len(A),len(A))
+    B = (H @ (A.reshape(len(A)**2, 1))).reshape(len(A),len(A))
     return B
 
 # Implementation method #3 for FDM, two matrix multiplications
@@ -226,25 +232,47 @@ def create_image():
 
 A = create_image()
 
-if ALGO == "FDM_MATRIX_VECTOR":
+if 		ALGO == "FDM_MATRIX_VECTOR":
 	H 		= euler_explicit(size, alpha)
+	#H 		= np.linalg.inv(euler_implicit(size,alpha))
 	func 	= iterate_matrix_vector
 
-elif ALGO == "FDM_FOR":
+elif 	ALGO == "FDM_FOR":
 	func 	= iterate_for
 
-elif ALGO == "FDM_MATRIX":
+elif 	ALGO == "FDM_MATRIX":
 	H 		= laplace1D(size,alpha)
 	func 	= iterate_matrix
 
-elif ALGO == "CG":
+elif 	ALGO == "CG":
 	H 		= euler_implicit(size, alpha)
 	func 	= iterate_cg
 
-elif ALGO == "GAUSS":
+elif 	ALGO == "GAUSS":
 	#H = np.linalg.inv(euler_explicit(size, alpha))
 	H 					= euler_implicit(size, alpha)
 	L_gauss, U_gauss 	= lu_zerlegung(H)	
 	func 				= iterate_gauss
 
 make_movie(A, frames, alpha, k, func)
+
+#size = 3
+#print(euler_explicit(3,alpha))
+
+"""
+B = np.arange(1,size**2+1)
+B = np.ones(size**2)
+C = B.reshape(size,size)
+print(C)
+
+C = C.reshape(size**2, 1)
+
+I = np.eye(size**2)
+#I = tridiag(-1,1,-1, size**2)
+B = np.diag([-1]*(size**2-size), size)
+
+I = I+B+B.T
+
+B = (I@C).reshape(size,size)
+print(B)
+"""
