@@ -9,7 +9,7 @@ np.set_printoptions(suppress=True, precision=2)
 
 # Parameters
 size = 100		# sqrt of samples
-frames = 300	# number of video frames
+frames = 1200	# number of video frames
 alpha = 1		# intensity [0,1)
 k = 20			# iterations per frame
 
@@ -116,10 +116,10 @@ def make_movie(U, N, alpha, k, iterate):
 
 			#U[K[i%len(K)]] = 1
 			
-			U[0,:]	= 1
+			U[0,:]	= 0
 			U[-1,:]	= 0
-			U[:,-1]	= 0
-			U[:,0]	= 0
+			U[:,-1]	= 1
+			U[:,0]	= 1
 
 			"""
 			if i < N/2:
@@ -231,7 +231,8 @@ def create_image():
 			A[i,j] = np.sin(c*i)*np.sin(c*j)
 	return A
 
-A = create_image()
+#A = create_image()
+A = np.zeros((size,size))
 
 if 	ALGO == "FDM_MATRIX_VECTOR":
 	H 		= euler_explicit(size, alpha)
