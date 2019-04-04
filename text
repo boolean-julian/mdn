@@ -23,7 +23,8 @@ Folie "Untere Grenze": [Ersetze durch:]
 Erstelle A_n für ein n \in \mathbb{N} und berechne
 $$ ||A_n||_2 = \sqrt{ \rho(A_n^T A_n) } = \sqrt{ \rho(B) } $$
 Das von-Mises-Verfahren liefert schnell eine Abschätzung an den betragsgrößten Eigenwert \lambda von $B$ und gibt auch den dazugehörigen Eigenvektor $v$ zurück.
-$sqrt{ |\lambda| } ist untere Grenze von ||A||_2
+$\alpha = sqrt{ |\lambda| } ist untere Grenze von ||A||_2
+
 
 
 
@@ -31,28 +32,54 @@ Folie "Lösungsverfahren Teil II" [Einführen:]
 
 Der EV v ist normiert und hat nur positive Einträge. Außerdem sind die Einträge, mit steigendem Index monoton fallend. Ist in 
 $$ frac{\sqrt{ || A_k^T A_k v ||_2 }}{\sqrt{ ||v||_2 }} = \sqrt{ |\lambda| } = ||A_k||_2 $$
-||v||_2 etwas größer als 1, so $\sqrt{ || A_k^T A_k v||_2 } > ||A_k||_2
+||v||_2 etwas größer als 1, so $\sqrt{ || A_k^T A_k v||_2 } > ||A_k||_2$
 
+Ist ||v||_2 groß genug, so ist sogar $\sqrt{ || A_k^T A_k v||_2 } > ||A||_2$
 
-[hier kommt noch was]
 
 
 
 Folie "Obere Grenze": [Ersetze durch:]
 
 Das von Mises-Verfahren gibt einen EV v \in \mathbb{R}^n zurück.
-Erweitere diesen auf m Dimensionen und nenne ihn \tilde{v}:
+Erweitere diesen auf m Dimensionen, m deutlich größer als n, und nenne ihn \tilde{v}:
 v_1 <- v_1 ,...., v_n <- v_n, v_(n+1) <- v_n, ..., v_m <- v_n
 Beachte: ||\tilde{v}||_2 ist etwas über 1
 Nutze \sqrt{ || A_m^T A_m \tilde{v}||_2 } > ||A_m||_2, indem
 1: x <- A_m \tilde{v}
 2: y <- A_m^T x
-3: \alpha = \sqrt{ ||y||_2 }
-\alpha ist obere Grenze von ||A||_2
+3: \beta = \sqrt{ ||y||_2 }
+\beta ist obere Grenze von ||A||_2
 
 
 
-Folie "Lösung": [folgt]
+Folie "Lösung": [Ersetze durch]
+
+Vergleich der Grenzen ergibt: ||A||_2 = 1.2742241528 \quad (11 Stellen)
+Um hinreichend genaue Ergebnisse zu erreichen, genügt n = 1800 und m = 2n
+
+\footnotesize
+	\begin{tabular}{l|l|l|l|l}
+		$n$ 	& $m$ 		& alpha 			& beta		& Genauigkeit			\\ \hline \hline
+		$8000$ 	& $10000$	& $1.2742241528116438$	&$1.2742241528249134$	&$11$	\\
+		$8000$	& $16000$	& $1.2742241528116438$	&$1.2742241528221396$	&$11$	\\
+		$12000$	& $24000$	& $1.2742241528182108$	&$1.2742241528211977$ 	&$11$ \\
+		6200& 20000& 1.2742241528011655& 1.2742241528269063& 11 \\
+		6200& 50000& 1.2742241528011655& 1.2742241528300235& 11 \\
+		1800& 100000& 1.2742241520093243& 1.2742241533011174& 9 \\
+		1800& 4500& 1.2742241520093243& 1.2742241529847291& 10 \\
+		1800& 3600& 1.2742241520093243& 1.2742241528986895& 10
+	\end{tabular}
+	\normalsize
+
+
+
+
+
+
+
+
+
 
 
 
