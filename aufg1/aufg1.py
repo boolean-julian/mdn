@@ -8,12 +8,12 @@ import sys
 np.set_printoptions(suppress=True, precision=2)
 
 # Parameters
-size = 10		# sqrt of samples
-frames = 6		# number of video frames
-alpha = 0.5		# intensity [0,1)
-k = 2			# iterations per frame
+size = 100		# sqrt of samples
+frames = 300	# number of video frames
+alpha = 1		# intensity [0,1)
+k = 20			# iterations per frame
 
-ALGO = "CG"	# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS"
+ALGO = "FDM_MATRIX"	# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS"
 
 
 # Triangular segmentation of a matrix
@@ -113,9 +113,10 @@ def make_movie(U, N, alpha, k, iterate):
 		for _ in range(k):
 			
 			U = iterate(U, alpha)
+
 			#U[K[i%len(K)]] = 1
 			
-			U[0,:]	= 0
+			U[0,:]	= 1
 			U[-1,:]	= 0
 			U[:,-1]	= 0
 			U[:,0]	= 0
@@ -197,9 +198,9 @@ def iterate_matrix(A, bloop):
 @jit
 def iterate_cg(B, bloop):
 	b = B.reshape(size**2,1)
-	x = b.copy()
+	x = b
 	r = b - H@x
-	d = r.copy()
+	d = r
 	
 	while np.linalg.norm(r) > 0.0001:
 		temp1 = H@d
@@ -232,23 +233,23 @@ def create_image():
 
 A = create_image()
 
-if 		ALGO == "FDM_MATRIX_VECTOR":
+if 	ALGO == "FDM_MATRIX_VECTOR":
 	H 		= euler_explicit(size, alpha)
 	#H 		= np.linalg.inv(euler_implicit(size,alpha))
 	func 	= iterate_matrix_vector
 
-elif 	ALGO == "FDM_FOR":
+elif ALGO == "FDM_FOR":
 	func 	= iterate_for
 
-elif 	ALGO == "FDM_MATRIX":
+elif ALGO == "FDM_MATRIX":
 	H 		= laplace1D(size,alpha)
 	func 	= iterate_matrix
 
-elif 	ALGO == "CG":
+elif ALGO == "CG":
 	H 		= euler_implicit(size, alpha)
 	func 	= iterate_cg
 
-elif 	ALGO == "GAUSS":
+elif ALGO == "GAUSS":
 	#H = np.linalg.inv(euler_explicit(size, alpha))
 	H 					= euler_implicit(size, alpha)
 	L_gauss, U_gauss 	= lu_zerlegung(H)	
