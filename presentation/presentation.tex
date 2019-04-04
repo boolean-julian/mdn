@@ -62,7 +62,7 @@
 
 \begin{frame}
 \frametitle{Diskretisierung der Wärmegleichung}
-	Nimm endlich viele, äquidistante Stellen aus $\Omega$, sodass Folgen entstehen mit $x_i = ih + x_0$ und $y_j = jh + y_0$. Wähle zusätzlich für die Zeit $t_k = k\Delta t + t_0$ Wir schreiben $U_{i,j}^k$ für die $i,j$-te Stelle zum Zeitpunkt $k$. Für jedes $k \in \mathbb{N}$ entsteht eine $m \times m$ Matrix. Zum Zeitpuntk $k$ haben wir dann:
+	Nimm endlich viele, äquidistante Stellen aus $\Omega$, sodass Folgen entstehen mit $x_i = ih + x_0$ und $y_j = jh + y_0$. Wähle zusätzlich für die Zeit $t_k = k\Delta t + t_0$ Wir schreiben $u_{i,j}^k$ für die $(i,j)$-te Stelle zum Zeitpunkt $k$. Für jedes $k \in \mathbb{N}$ entsteht eine $m \times m$ Matrix. Zum Zeitpunkt $k$ haben wir dann:
 	$$
 	\begin{pmatrix}
 		u^k_{0,0}& 		u^k_{0,1}& \cdots & u^k_{0,m} 	\\
@@ -97,49 +97,65 @@
 	\begin{multline*}
 		\nabla^2u(x,y,t) = \frac{1}{4h^2} \bigg(u(x-h,y,t) + u(x+h,y,t) \\+ u(x,y-h,t) + u(x,y+h,t) - 4u(x,y,t) \bigg) + O(h^4)
 	\end{multline*}
+	Für diese Terme können wir im diskreten Fall unter Vernachlässigung des Fehlers schreiben
+	$$ \frac{u_{i,j}^{k+1} - u_{i,j}^k}{\Delta t} \quad\text{und}\quad \frac{1}{4h^2} \bigg( u_{i+1,j}^k + u_{i-1,j}^k + u^k_{i,j+1} + u^k_{i,j-1} - 4u^k_{i,j} \bigg)$$
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Explizites Euler-Verfahren}
-	
-
+	Sei ab jetzt $h = 1$ und $\Delta t = 1$.
+	Für das explizite Euler-Verfahren suchen wir eine Matrix $A \in \mathbb{R}^{m^2 \times m^2}$ für die gilt:
+	$$u^{k+1} = u^k + \alpha A u^k$$
+	Mit den aus der Taylor-Entwicklung gewonnenen Diskretisierungen für unsere Differentialoperatoren erhalten wir mit ein paar Umformungen die Iterationsvorschrift
+	$$u^{k+1}_{i,j} = \alpha \bigg( \frac{u_{i+1,j}^k + u_{i-1,j}^k + u^k_{i,j+1} + u^k_{i,j-1}}{4} \bigg)
+		+ (1-\alpha)u^k_{i,j} $$
 \end{frame}
-
-
 
 \begin{frame}
 \frametitle{Explizites Euler-Verfahren}
-	Für den diskreten Fall (und unter der Annahme, dass bei den Gleichungen von vorhin der Fehlerterm für hinreichend kleine $h$ und $\Delta t$ wegfällt), erhalten wir folgende Matrix:
-	$$
-		A_\alpha = \frac{\alpha}{4h^2}\bigg(\text{tridiag}(1,-4,1) + G \bigg) \in \mathbb{R}^{m^2 \times m^2}
-	$$
-	wobei
-	$$
-	G =\begin{pmatrix}
-			\mathbf{0} 	& \mathbf{I} 	& \mathbf{0} 	& 				& \cdots 		&				& \mathbf{0} 	\\
-			\mathbf{I}	& \mathbf{0} 	& \mathbf{I} 	& 				&				& 				&			 	\\
-			\mathbf{0}	& \mathbf{I}	&				& 				& 				&				&				\\
+	Im expliziten Euler-Verfahren sieht die Verfahrensmatrix dann so aus:
+	$$ A = \frac{1}{4}
+		\begin{bmatrix}
+			\mathbf{L} 	& \mathbf{I} 	& \mathbf{0} 	& 				& \cdots 		&				& \mathbf{0} 	\\
+			\mathbf{I}	& \mathbf{L} 	& \mathbf{I} 	& 				&				& 				&			 	\\
+			\mathbf{0}	& \mathbf{I}	& \mathbf{L}	& 				& 				&				&				\\
 			\vdots		&				&				& 				& \ddots		&				& \vdots		\\
-						&				&				&				&				& \mathbf{0}	& \mathbf{I}	\\
-			\mathbf{0}	&				&				&				&				& \mathbf{I}	& \mathbf{0}	\\
-		\end{pmatrix}
-	$$
-	eine Blockmatrix mit $m \times m$ Einheitsmatrizen auf den Nebendiagonalen.
+						&				&				&				&				&				&				\\
+						&				&				&				&				& \mathbf{L}	& \mathbf{I}	\\
+			\mathbf{0}	&				&				&	\cdots		&				& \mathbf{I}	& \mathbf{L}	\\		
+		\end{bmatrix}
+	\quad
+	\text{wobei}
+	\quad
+	L = \text{tridiag}(1,-4,1)$$
+	
+	Damit wird das explizite Euler-Verfahren in unserem Fall zu
+	$$ u^{k+1} = u^k + \alpha A u^k = (\alpha A + I)u^k $$
 \end{frame}
-
 
 \begin{frame}
 \frametitle{Implizites Euler-Verfahren}
-	
+	Im impliziten Euler-Verfahren gilt es nun, eine Iterationsvorschrift der Form
+	$$ u^{k+1} = u^k + \alpha Bu^{k+1} $$
+	zu finden.
+	Aus dem expliziten Euler-Verfahren lässt sich dafür
+	$$ B = A (\alpha A + I)^{-1} $$
+	herleiten.
+	Wir gewinnen daraus ein Gleichungssystem in der Form $Cx = d$, welches wir in jedem Schritt nach $x$ lösen können
+	$$ u^k = (I - \alpha A (\alpha A + I)^{-1}) u^{k+1} $$
+	\begin{remark}
+		Hierfür eignet sich das CG-Verfahren.
+
+		Weiterhin ist das LGS nur lösbar, wenn $\alpha \neq 1$
+	\end{remark}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Finite Differenzen}
 	Durch Umstellen der Wärmegleichung mit $A$ von vorhin können wir durch folgende Iterationsvorschrift mit gegebenen Startwerten $u^0$ den Verlauf der Wärmegleichung simulieren:
-	$$u^{k+1} = (A_\alpha +I)u^k$$
-	Mehrfachanwendung des Operators steht für größeres $\Delta t$. Wählt man mehr Samples, so wird $h$ kleiner.
+	$$u^{k+1} = (\alpha A+I)u^k$$
 \end{frame}
 
 \begin{frame}
@@ -152,8 +168,22 @@
 	\end{remark}
 \end{frame}
 
+
 \begin{frame}
 \frametitle{Konjugierte Gradienten}
+	Wir erinnern uns an das implizite Euler-Verfahren mit dem Gleichungssystem 
+		$$ u^k = (I - \alpha A (\alpha A + I)^{-1}) u^{k+1} $$
+	Um dieses zu lösen, definieren wir 
+		$$ K = (I - \alpha A (\alpha A + I)^{-1})$$
+	In jedem Schritt unserer Iteration lösen wir nun das Gleichungssystem
+		$$ u^k = Ku^{k+1}$$
+	mithilfe des Algorithmus der konjugierten Gradienten.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Konjugierte Gradienten}
+	In jedem Schritt führen wir aus:
 	\begin{algorithm}[H]
 		\begin{algorithmic}[1]
 			\STATE $k \gets 0$, $r_0 \gets b-Kx_0$, $d_0 \gets r_0$
@@ -172,16 +202,35 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Konjugierte Gradienten}
-	\begin{remark}
-	Dieses Verfahren funktioniert nur für symmetrische, positiv definite Matrizen. 
-	Für $\alpha = 1$ hat die Verfahrensmatrix $(A_\alpha + I)$ keine Inverse, da dann jeder Diagonaleintrag der Matrix $0$ ist.
-	\end{remark}
+\frametitle{Gauss-Elimination}
+	Man kann das LGS ebenfalls mit Gauss-Elimination lösen. Zunächst brauchen wir dafür die LU-Zerlegung $K = LU$, wobei $L$ untere Dreiecksmatrix und $U$ obere Dreiecksmatrix.
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\STATE $U \gets K$, $L \gets I$
+			\FOR {$i \in \{1 ... n\}$}
+				\FOR {$k \in \{i+1 ... n\}$}
+					\STATE $L_{ki} \gets \frac{U_{ki}}{U{ii}}$
+					\FOR {$j \in \{i ... n\}$}
+						\STATE $U_{kj} \gets U_{kj} - L_{ki} \cdot U_{ij}$
+					\ENDFOR
+				\ENDFOR
+			\ENDFOR
+			\RETURN $L$, $U$
+		\end{algorithmic}
+		\caption{LU-Zerlegung}
+	\end{algorithm}
 \end{frame}
 
 \begin{frame}
 \frametitle{Gauss-Elimination}
-	
+	Jetzt löst man durch Vorwärtselimination
+	$$Ly = u^{k}$$
+	und danach durch Rückwärtselimination
+	$$Uu^{k+1} = y$$
+	\begin{remark}
+		Die $LU$-Zerlegung von $K$ müssen wir für unsere Zwecke nur einmal bestimmen. 
+	\end{remark}
+
 \end{frame}
 
 \section{Aufgabe 2 - Newton-Verfahren}
@@ -399,8 +448,8 @@
 	
 	$B$ ist symmetrisch und damit diagonalisierbar.
 
-	Für den betragsgrößten Eigenwert $\lambda$ und seinen Eigenvektor v gilt $Bv = \lambda v$ und, da $B$ diagonalisierbar
-	$||Bv||_2 = ||B||_2 * ||v||_2$, insgesamt
+	Für den betragsgrößten Eigenwert $\lambda$ und seinen Eigenvektor $v$ gilt $Bv = \lambda v$ und, da $B$ diagonalisierbar
+	$||Bv||_2 = ||B||_2 \cdot ||v||_2$, insgesamt
 
 
 
@@ -428,7 +477,15 @@
 
 \begin{frame}
 \frametitle{Lösung}
-	
+	\footnotesize
+	\begin{tabular}{l|l|l|l|l}
+		$n$ 	& $m$ 		& von Mises 			& Eigenvektoren			& Ergebnis			\\ \hline \hline
+		$8000$ 	& $10000$	& $1.2742241528116438$	&$1.2742241528249134$	&$1.2742241528$	\\
+		$8000$	& $16000$	& $1.2742241528116438$	&$1.2742241528221396$	&$1.2742241528$	\\
+		$12000$	& $24000$	& $1.2742241528182108$	&$1.2742241528211977$ 	&$1.2742241528$
+		
+	\end{tabular}
+	\normalsize
 \end{frame}
 
 
