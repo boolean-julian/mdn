@@ -52,7 +52,7 @@
 \begin{frame}
 \frametitle{Wärmegleichung}
 	Die Wärmegleichung lautet
-	$$ \frac{\partial u}{\partial t} - \alpha \nabla^2 u$$
+	$$ \frac{\partial u}{\partial t} - \alpha \nabla^2 u = 0$$
 	Mit $u: \Omega \times \mathbb{R}^+ \rightarrow \mathbb{R}$ mit folgenden Randbedingungen:
 	\begin{itemize}
 		\item $ u(x,t) = R$ für $ x \in \partial \Omega$	
@@ -277,7 +277,7 @@
 				\STATE $s_k \gets \alpha p_k$
 				\STATE $x_{k+1} \gets x_k+s_k$
 				\STATE $y_k \gets \nabla f(x_{k+1}) - \nabla f(x_k)$
-				\STATE $H_k = \text{update}(H_k)$
+				\STATE $H_{k+1} \gets \text{update}(H_k)$
 				\STATE $k \gets k+1$
 			\ENDWHILE
 			\RETURN $x_k$

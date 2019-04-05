@@ -10,10 +10,10 @@ np.set_printoptions(suppress=True, precision=2)
 # Parameters
 size = 100		# sqrt of samples
 frames = 1200	# number of video frames
-alpha = 1		# intensity [0,1)
+alpha = 0.75	# intensity \in [0,1]
 k = 20			# iterations per frame
 
-ALGO = "FDM_MATRIX"	# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS"
+ALGO = "DOUGLAS_RACHFORD"	# "FDM_MATRIX_VECTOR", "FDM_FOR", "FDM_MATRIX", "CG", "GAUSS", "DOUGLAS_RACHFORD"
 
 
 # Triangular segmentation of a matrix
@@ -162,8 +162,15 @@ def euler_implicit(N,alpha):
 	return I - alpha*A @ np.linalg.inv(alpha*A + I)
 
 @jit
-def laplace1D(N, alpha):
+def laplace1D_exp(N, alpha):
 	return 0.5*alpha*tridiag(1,-2,1, N) + np.eye(N)
+
+@jit
+def laplace1D_imp(N, alpha):
+	A = 0.5*tridiag(1,-2,1,N)
+	I = np.eye(N)
+
+	return I - alpha*A @ np.linalg.inv(alpha*A + I)
 
 # Implementation method #1 for FDM, element-wise
 @jit
@@ -193,6 +200,14 @@ def iterate_matrix_vector(A,bloop):
 @jit
 def iterate_matrix(A, bloop):
 	return 0.5*(H@A + A@H)
+
+
+@jit
+def iterate_douglas_rachford(A, bloop):
+	if dr_inverted:
+		return 0.5*(H@A + A@K)
+	return 0.5*(K@A + A@H)
+
 
 # Implementation of conjugate gradients
 @jit
@@ -243,7 +258,7 @@ elif ALGO == "FDM_FOR":
 	func 	= iterate_for
 
 elif ALGO == "FDM_MATRIX":
-	H 		= laplace1D(size,alpha)
+	H 		= laplace1D_exp(size,alpha)
 	func 	= iterate_matrix
 
 elif ALGO == "CG":
@@ -256,25 +271,10 @@ elif ALGO == "GAUSS":
 	L_gauss, U_gauss 	= lu_zerlegung(H)	
 	func 				= iterate_gauss
 
+elif ALGO == "DOUGLAS_RACHFORD":
+	dr_inverted = False
+	H = laplace1D_exp(size,alpha)
+	K = np.linalg.inv(laplace1D_imp(size,alpha))
+	func = iterate_douglas_rachford
+
 make_movie(A, frames, alpha, k, func)
-
-#size = 3
-#print(euler_explicit(3,alpha))
-
-"""
-B = np.arange(1,size**2+1)
-B = np.ones(size**2)
-C = B.reshape(size,size)
-print(C)
-
-C = C.reshape(size**2, 1)
-
-I = np.eye(size**2)
-#I = tridiag(-1,1,-1, size**2)
-B = np.diag([-1]*(size**2-size), size)
-
-I = I+B+B.T
-
-B = (I@C).reshape(size,size)
-print(B)
-"""
